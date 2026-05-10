@@ -574,6 +574,13 @@
 
     <!-- Panel autenticado -->
     <div id="adminContent" class="hidden">
+  <div style="margin-bottom:12px;text-align:right">
+    <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">🌐 Ir a la web</button>
+  </div>
+  <div class="panel" style="margin-bottom:16px">
+    <h3 style="margin-bottom:8px">Cambiar contraseña admin</h3>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px">La contraseña se gestiona en Vercel. Ve a:<br><b>vercel.com → proyecto → Environment Variables → ADMIN_PASSWORD</b></p>
+  </div>
 
       <div class="grid2">
         <!-- Texto del perfil -->
@@ -861,6 +868,8 @@ $('#loginBtn').addEventListener('click', async () => {
 });
 
 if (state.adminPass) $('#adminPass').value = state.adminPass;
+
+
 
 /* Presign + upload directo a B2 */
 async function presignAndUpload(file, key, onProgress) {
