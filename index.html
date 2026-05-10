@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SONARA</title>
+  <meta name="description" content="SONARA — Archivo musical privado" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink: #ff2bd6;
+      --cyan: #00e5ff;
+      --bg: #050308;
+      --text: #fff7ff;
+      --muted: #c4b3cc;
+      --glass: rgba(10,6,16,.76);
+      --line: rgba(255,255,255,.11);
+      --player-h: 90px;
+      --danger: #ff4778;
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: var(--bg) center/cover fixed no-repeat;
+      padding-bottom: calc(var(--player-h) + env(safe-area-inset-bottom) + 24px);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Overlay neón sobre el fondo */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 15% 5%, rgba(255,43,214,.32), transparent 36rem),
+        radial-gradient(circle at 90% 20%, rgba(0,229,255,.22), transparent 30rem),
+        linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.88) 60%, #050308);
+    }
+
+    button, input, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; background: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Layout ── */
+    .app { width: min(1140px, 100%); margin: 0 auto; padding: 14px 16px; }
+
+    /* ── Topbar ── */
+    .top {
+      position: sticky; top: 0; z-index: 30;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0 14px;
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      font-weight: 900;
+      font-size: clamp(2.4rem, 8vw, 6rem);
+      letter-spacing: .07em;
+      line-height: .9;
+      background: linear-gradient(135deg, var(--pink) 20%, var(--cyan) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(255,43,214,.55)) drop-shadow(0 0 36px rgba(0,229,255,.2));
+    }
+
+    /* ── Botones base ── */
+    .btn, .pill, .adminBtn {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.09);
+      color: var(--text);
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: .88rem;
+      transition: .15s background, .15s border-color, .15s box-shadow;
+      white-space: nowrap;
+    }
+    .btn:hover, .adminBtn:hover {
+      background: rgba(255,43,214,.18);
+      border-color: rgba(255,43,214,.5);
+      box-shadow: 0 0 18px rgba(255,43,214,.25);
+    }
+    .adminBtn {
+      background: linear-gradient(135deg, rgba(255,43,214,.25), rgba(0,229,255,.12));
+      border-color: rgba(255,43,214,.4);
+    }
+
+    /* ── Hero perfil ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--glass);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6), 0 0 60px rgba(255,43,214,.07);
+      min-height: 360px;
+    }
+
+    .banner {
+      height: 220px;
+      background: #1a0f24 center/cover no-repeat;
+      position: relative;
+    }
+    .banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(5,3,8,.95));
+    }
+
+    .profile {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: end;
+      padding: 0 28px 28px;
+      margin-top: -62px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .avatar {
+      width: 128px; height: 128px;
+      border-radius: 999px;
+      border: 4px solid rgba(255,255,255,.9);
+      background: #17101f center/cover no-repeat;
+      box-shadow: 0 0 28px rgba(255,43,214,.65), 0 0 60px rgba(0,229,255,.2);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .meta h1 {
+      font-size: clamp(2rem, 7vw, 4.5rem);
+      font-weight: 900;
+      line-height: .92;
+      letter-spacing: -.04em;
+      background: linear-gradient(135deg, #fff 60%, rgba(255,43,214,.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .meta p {
+      margin-top: 14px;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: .98rem;
+      line-height: 1.6;
+    }
+
+    /* ── Sección álbumes ── */
+    .sectionHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 28px 2px 16px;
+    }
+    .sectionHead h2 { font-size: 1.3rem; font-weight: 700; }
+
+    .albums {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .album {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(12,8,20,.78);
+      padding: 14px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+    }
+    .album:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,43,214,.5);
+      box-shadow: 0 20px 50px rgba(0,0,0,.4), 0 0 24px rgba(255,43,214,.12);
+    }
+
+    .cover {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      background: #15101e center/cover no-repeat;
+      box-shadow: 0 12px 30px rgba(0,0,0,.4);
+      overflow: hidden;
+    }
+    /* Lazy load placeholder shimmer */
+    .cover.loading {
+      background: linear-gradient(90deg, #1a0f28 25%, #2a183a 50%, #1a0f28 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .album h3 { margin: 12px 2px 4px; font-size: .95rem; font-weight: 700; }
+    .album small { display: block; margin: 0 2px 12px; color: var(--muted); font-size: .8rem; }
+
+    .track {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-align: left;
+      color: var(--text);
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.07);
+      padding: 9px 11px;
+      border-radius: 11px;
+      margin-top: 7px;
+      font-size: .84rem;
+      transition: background .15s, border-color .15s;
+    }
+    .track:hover { background: rgba(255,43,214,.18); border-color: rgba(255,43,214,.35); }
+    .track.playing { background: rgba(255,43,214,.22); border-color: rgba(255,43,214,.55); }
+    .track-icon { color: var(--pink); flex-shrink: 0; font-size: .9rem; }
+    .track-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .more-tracks { font-size: .78rem; color: var(--muted); padding: 6px 4px 0; }
+
+    /* ── Paginación ── */
+    .pager { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 24px 0 8px; }
+    .pager .btn { padding: 9px 20px; }
+    .pager .pill { padding: 9px 18px; font-size: .85rem; }
+
+    /* ── Player fijo ── */
+    .player {
+      position: fixed;
+      left: 50%; bottom: 0;
+      transform: translateX(-50%);
+      z-index: 50;
+      width: min(1140px, 100%);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, transparent, rgba(5,3,8,.93) 22%, rgba(5,3,8,.99));
+      backdrop-filter: blur(20px);
+    }
+
+    .playerInner {
+      display: grid;
+      grid-template-columns: 1.2fr 1.7fr 1.2fr;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(18,10,28,.92);
+      padding: 11px 14px;
+      box-shadow: 0 -18px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    /* Nowplaying */
+    .now { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .nowCover {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      background: #17101f center/cover no-repeat;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
+    }
+    .nowText { min-width: 0; }
+    .nowText b, .nowText span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nowText b { font-size: .92rem; }
+    .nowText span { font-size: .78rem; color: var(--muted); margin-top: 3px; }
+
+    /* Controls */
+    .controls { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+    .iconBtn {
+      width: 42px; height: 42px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.09);
+      display: grid; place-items: center;
+      transition: background .15s, box-shadow .15s, transform .1s;
+    }
+    .iconBtn:hover { background: rgba(255,43,214,.2); }
+    .iconBtn:active { transform: scale(.92); }
+    .iconBtn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .playBtn {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      color: #08030a;
+      box-shadow: 0 0 22px rgba(255,43,214,.45);
+    }
+    .playBtn:hover { box-shadow: 0 0 32px rgba(255,43,214,.65); }
+    .playBtn svg { width: 22px; height: 22px; }
+
+    .repeatBtn { position: relative; }
+    .repeatBtn.active {
+      color: var(--pink);
+      border-color: rgba(255,43,214,.5);
+      box-shadow: 0 0 16px rgba(255,43,214,.3);
+    }
+    .repeatBtn.active::after {
+      content: '1';
+      position: absolute;
+      right: 7px; bottom: 6px;
+      width: 13px; height: 13px;
+      border-radius: 999px;
+      background: var(--pink);
+      color: #07030a;
+      font-size: 8px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+      line-height: 1;
+    }
+
+    /* Progress bar */
+    .barWrap { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+    .time { font-size: .73rem; color: var(--muted); min-width: 36px; text-align: center; }
+
+    .range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.16);
+      outline: none;
+      cursor: pointer;
+    }
+    .range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 15px; height: 15px;
+      border-radius: 999px;
+      background: var(--pink);
+      box-shadow: 0 0 14px rgba(255,43,214,.8);
+      cursor: pointer;
+    }
+    .range::-moz-range-thumb {
+      width: 15px; height: 15px;
+      border-radius: 999px;
+      background: var(--pink);
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ── Panel Admin ── */
+    .adminPanel {
+      position: fixed; inset: 0; z-index: 90;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 20px 12px;
+    }
+    .adminPanel.open { display: flex; }
+
+    .panel {
+      width: min(980px, 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: #0e0816;
+      box-shadow: 0 30px 100px rgba(0,0,0,.8);
+      padding: 22px;
+      margin: auto;
+    }
+
+    .panelHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+    .panelHead h2 { font-size: 1.3rem; }
+
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.04);
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .box h3 { font-size: 1rem; margin-bottom: 12px; }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .field { display: grid; gap: 6px; margin-top: 12px; }
+    .field label { font-size: .82rem; color: var(--muted); font-weight: 700; letter-spacing: .02em; }
+    .field input, .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: rgba(0,0,0,.32);
+      color: var(--text);
+      padding: 11px 13px;
+      outline: 0;
+      transition: border-color .15s;
+    }
+    .field input:focus, .field textarea:focus { border-color: rgba(255,43,214,.55); }
+    .field textarea { min-height: 88px; resize: vertical; }
+
+    .drop {
+      border: 1px dashed rgba(255,43,214,.5);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      background: rgba(255,43,214,.05);
+      margin-top: 12px;
+    }
+    .drop b { color: var(--pink); display: block; margin-bottom: 6px; }
+    .drop p { font-size: .84rem; color: var(--muted); }
+
+    .progress { height: 9px; border-radius: 999px; background: rgba(255,255,255,.1); overflow: hidden; margin-top: 12px; }
+    .progress > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--cyan)); transition: width .15s; }
+
+    .adminAlbum {
+      display: flex; gap: 12px; align-items: center; justify-content: space-between;
+      border: 1px solid var(--line); border-radius: 14px; padding: 11px 13px; margin-top: 9px;
+    }
+    .adminAlbum span { font-size: .88rem; }
+    .adminAlbum small { display: block; color: var(--muted); font-size: .75rem; margin-top: 2px; }
+
+    .dangerBtn {
+      background: rgba(255,71,120,.14);
+      color: #ffd0de;
+      border: 1px solid rgba(255,71,120,.35);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: .82rem;
+      font-weight: 700;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .dangerBtn:hover { background: rgba(255,71,120,.28); }
+
+    .msg { margin-top: 10px; font-size: .85rem; color: var(--muted); min-height: 20px; }
+    .msg.ok { color: var(--cyan); }
+    .msg.err { color: var(--danger); }
+
+    .hidden { display: none !important; }
+    .empty {
+      border: 1px solid var(--line); border-radius: 22px;
+      background: rgba(255,255,255,.04);
+      padding: 40px; text-align: center; color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .albums { grid-template-columns: repeat(2, 1fr); }
+      .grid2 { grid-template-columns: 1fr; }
+      .playerInner { grid-template-columns: 1fr; gap: 10px; }
+      .barWrap { order: 3; justify-content: center; }
+      .controls { order: 1; }
+      .now { order: 2; justify-content: center; }
+      .brand { font-size: 3.2rem; }
+      .banner { height: 180px; }
+      .profile { grid-template-columns: 1fr; text-align: center; justify-items: center; margin-top: -58px; padding: 0 18px 22px; }
+      .avatar { width: 110px; height: 110px; }
+    }
+    @media (max-width: 440px) {
+      .app { padding: 10px 12px; }
+      .albums { grid-template-columns: 1fr; }
+      .brand { font-size: 2.5rem; }
+      .hero { border-radius: 20px; }
+      .banner { height: 155px; }
+      .meta h1 { font-size: 2.1rem; }
+      .panel { padding: 16px; }
+      .player { padding-left: 10px; padding-right: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<main class="app">
+  <div class="top">
+    <div class="brand">SONARA</div>
+    <button class="adminBtn" id="openAdmin">Admin</button>
+  </div>
+
+  <section class="hero">
+    <div class="banner" id="banner"></div>
+    <div class="profile">
+      <div class="avatar" id="avatar"></div>
+      <div class="meta">
+        <h1 id="alias">SONARA</h1>
+        <p id="bio">Archivo musical privado, visual y persistente.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="sectionHead">
+    <h2>Álbumes</h2>
+    <span class="pill" id="albumCount">—</span>
+  </div>
+  <section class="albums" id="albums">
+    <div class="empty">Cargando...</div>
+  </section>
+  <div class="pager" id="pager">
+    <button class="btn" id="prevPage">← Anterior</button>
+    <span class="pill" id="pageInfo">1 / 1</span>
+    <button class="btn" id="nextPage">Siguiente →</button>
+  </div>
+</main>
+
+<!-- Player -->
+<footer class="player">
+  <div class="playerInner">
+    <!-- Now playing -->
+    <div class="now">
+      <div class="nowCover" id="nowCover"></div>
+      <div class="nowText">
+        <b id="nowTitle">Nada reproduciendo</b>
+        <span id="nowAlbum">Elige una canción</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <!-- Prev -->
+      <button class="iconBtn" id="prevTrack" title="Anterior">
+        <svg viewBox="0 0 24 24"><polygon points="19,20 9,12 19,4"/><line x1="5" y1="4" x2="5" y2="20"/></svg>
+      </button>
+      <!-- Play/Pause -->
+      <button class="iconBtn playBtn" id="playPause" title="Play/Pausa">
+        <svg id="playIcon" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/></svg>
+      </button>
+      <!-- Next -->
+      <button class="iconBtn" id="nextTrack" title="Siguiente">
+        <svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
+      </button>
+      <!-- Repeat one -->
+      <button class="iconBtn repeatBtn active" id="repeatBtn" title="Repetir canción">
+        <svg viewBox="0 0 24 24">
+          <polyline points="17,1 21,5 17,9"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7,23 3,19 7,15"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="barWrap">
+      <span class="time" id="curTime">0:00</span>
+      <input class="range" id="seek" type="range" min="0" max="100" value="0" />
+      <span class="time" id="durTime">0:00</span>
+    </div>
+  </div>
+</footer>
+
+<audio id="audio" preload="metadata"></audio>
+
+<!-- Admin Panel -->
+<aside class="adminPanel" id="adminPanel">
+  <div class="panel">
+    <div class="panelHead">
+      <h2>Admin SONARA</h2>
+      <button class="btn" id="closeAdmin">✕ Cerrar</button>
+    </div>
+
+    <!-- Login -->
+    <div class="box" id="loginBox">
+      <h3>Acceso admin</h3>
+      <div class="field">
+        <label>Contraseña</label>
+        <input id="adminPass" type="password" placeholder="Contraseña de admin" />
+      </div>
+      <button class="btn" id="loginBtn" style="margin-top:12px">Entrar</button>
+      <p class="msg err" id="loginMsg"></p>
+    </div>
+
+    <!-- Panel autenticado -->
+    <div id="adminContent" class="hidden">
+
+      <div class="grid2">
+        <!-- Texto del perfil -->
+        <div class="box">
+          <h3>Perfil — Texto</h3>
+          <div class="field"><label>Alias / Nombre</label><input id="editAlias" /></div>
+          <div class="field"><label>Biografía</label><textarea id="editBio"></textarea></div>
+          <button class="btn" id="saveProfileText" style="margin-top:14px">Guardar texto</button>
+          <p class="msg" id="profileTextMsg"></p>
+        </div>
+
+        <!-- Imágenes -->
+        <div class="box">
+          <h3>Imágenes del perfil</h3>
+          <div class="field"><label>Avatar (círculo)</label><input id="avatarFile" type="file" accept="image/*" /></div>
+          <div class="field"><label>Banner (cabecera)</label><input id="bannerFile" type="file" accept="image/*" /></div>
+          <div class="field"><label>Fondo de pantalla</label><input id="backgroundFile" type="file" accept="image/*" /></div>
+          <button class="btn" id="saveImages" style="margin-top:14px">Subir y reemplazar imágenes</button>
+          <div class="progress"><i id="imgProgress"></i></div>
+          <p class="msg" id="imgMsg"></p>
+        </div>
+      </div>
+
+      <!-- Subir álbum -->
+      <div class="box">
+        <h3>Subir álbum completo</h3>
+        <div class="grid2">
+          <div class="field"><label>Título del álbum</label><input id="albumTitle" placeholder="Nombre del álbum" /></div>
+          <div class="field"><label>Año</label><input id="albumYear" placeholder="2025" /></div>
+        </div>
+        <div class="field"><label>Carátula del álbum</label><input id="coverFile" type="file" accept="image/*" /></div>
+        <div class="drop">
+          <b>📁 Carpeta de canciones</b>
+          <p>Selecciona la carpeta completa. Todos los MP3 heredan la carátula elegida arriba.</p>
+          <input id="folderInput" type="file" webkitdirectory directory multiple accept="audio/*" style="margin-top:10px" />
+        </div>
+        <button class="btn" id="uploadAlbum" style="margin-top:14px">Subir álbum completo</button>
+        <div class="progress"><i id="uploadProgress"></i></div>
+        <p class="msg" id="uploadMsg"></p>
+      </div>
+
+      <!-- Lista álbumes admin -->
+      <div class="box">
+        <h3>Álbumes en servidor</h3>
+        <div id="adminAlbums"><p style="color:var(--muted);font-size:.85rem">Cargando álbumes...</p></div>
+      </div>
+
+    </div><!-- /adminContent -->
+  </div>
+</aside>
+
+<script>
+/* ── Utilidades ── */
+const $ = s => document.querySelector(s);
+function esc(v) {
+  return String(v ?? '').replace(/[&<>'"]/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[c])
+  );
+}
+function fmt(s) {
+  if (!isFinite(s) || s < 0) return '0:00';
+  const m = Math.floor(s / 60), r = Math.floor(s % 60);
+  return `${m}:${String(r).padStart(2,'0')}`;
+}
+function uid(p='id') { return `${p}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
+function ext(name) { return (name.match(/\.[a-z0-9]+$/i) || [''])[0].toLowerCase(); }
+function safeName(n) {
+  return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-');
+}
+
+/* ── State ── */
+const state = {
+  catalog: null,
+  page: 1,
+  perPage: 8,
+  queue: [],
+  currentIndex: -1,
+  repeatOne: true,
+  adminPass: localStorage.getItem('sonara_admin') || ''
+};
+
+/* ── Audio ── */
+const audio = $('#audio');
+audio.loop = true;
+
+/* ── API ── */
+async function api(path, opt = {}) {
+  const headers = { ...(opt.headers || {}) };
+  if (state.adminPass) headers['x-admin-password'] = state.adminPass;
+  if (opt.body && !(opt.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+  const r = await fetch(path, { ...opt, headers });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || `Error ${r.status}`);
+  return data;
+}
+
+/* ── Media proxy URL ── */
+function media(key, fallback = '') {
+  if (!key) return fallback;
+  return `/api/media/${encodeURIComponent(key).replaceAll('%2F', '/')}`;
+}
+
+/* ── Cargar catálogo ── */
+async function load() {
+  state.catalog = await api('/api/catalog');
+  applyProfile();
+  buildQueue();
+  renderAlbums();
+  renderAdminAlbums();
+}
+
+function applyProfile() {
+  const p = state.catalog.profile || {};
+  $('#alias').textContent = p.alias || 'SONARA';
+  $('#bio').textContent   = p.bio || '';
+  $('#avatar').style.backgroundImage   = `url('${media(p.avatarKey, '/assets/avatar.jpeg')}')`;
+  $('#banner').style.backgroundImage   = `url('${media(p.bannerKey, '/assets/banner.jpeg')}')`;
+  document.body.style.backgroundImage  = `url('${media(p.backgroundKey, '/assets/background.jpeg')}')`;
+}
+
+function buildQueue() {
+  state.queue = [];
+  (state.catalog.albums || []).forEach(a =>
+    (a.tracks || []).forEach(t =>
+      state.queue.push({ ...t, album: a.title, coverKey: a.coverKey, albumId: a.id })
+    )
+  );
+}
+
+/* ── Lazy load covers ── */
+function lazyImg(el, src) {
+  if (!src) return;
+  el.classList.add('loading');
+  const img = new Image();
+  img.onload = () => { el.style.backgroundImage = `url('${src}')`; el.classList.remove('loading'); };
+  img.onerror = () => { el.classList.remove('loading'); };
+  img.src = src;
+}
+
+/* ── Render álbumes ── */
+function renderAlbums() {
+  const albums = state.catalog.albums || [];
+  $('#albumCount').textContent = `${albums.length} álbum${albums.length === 1 ? '' : 'es'}`;
+
+  const pages = Math.max(1, Math.ceil(albums.length / state.perPage));
+  state.page = Math.min(state.page, pages);
+  $('#pageInfo').textContent = `${state.page} / ${pages}`;
+  $('#pager').style.display = albums.length > state.perPage ? 'flex' : 'none';
+
+  const slice = albums.slice((state.page - 1) * state.perPage, state.page * state.perPage);
+
+  if (!slice.length) {
+    $('#albums').innerHTML = `<div class="empty">Todavía no hay álbumes.<br>Entra en <b>Admin</b> y sube una carpeta completa.</div>`;
+    return;
+  }
+
+  $('#albums').innerHTML = slice.map(a => {
+    const tracksToShow = (a.tracks || []).slice(0, 5);
+    const extra = (a.tracks || []).length - 5;
+    return `<article class="album" data-album-id="${esc(a.id)}">
+      <div class="cover" data-cover="${esc(media(a.coverKey, '/assets/default-cover.jpeg'))}"></div>
+      <h3>${esc(a.title)}</h3>
+      <small>${esc(a.year || '')}${a.year ? ' · ' : ''}${(a.tracks || []).length} canciones</small>
+      ${tracksToShow.map(t =>
+        `<button class="track" data-track="${esc(t.id)}">
+          <span class="track-icon">▶</span>
+          <span class="track-name">${esc(t.title)}</span>
+        </button>`
+      ).join('')}
+      ${extra > 0 ? `<p class="more-tracks">+ ${extra} canciones más</p>` : ''}
+    </article>`;
+  }).join('');
+
+  // Lazy load covers
+  document.querySelectorAll('.cover[data-cover]').forEach(el => {
+    lazyImg(el, el.dataset.cover);
+  });
+
+  // Track click handlers
+  document.querySelectorAll('[data-track]').forEach(b =>
+    b.addEventListener('click', () => playTrack(b.dataset.track))
+  );
+}
+
+/* ── Paginación ── */
+$('#prevPage').addEventListener('click', () => {
+  if (state.page > 1) { state.page--; renderAlbums(); scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+$('#nextPage').addEventListener('click', () => {
+  const pages = Math.ceil((state.catalog?.albums?.length || 0) / state.perPage);
+  if (state.page < pages) { state.page++; renderAlbums(); scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+
+/* ── Reproductor ── */
+function playTrack(id) {
+  const i = state.queue.findIndex(t => String(t.id) === String(id));
+  if (i < 0) return;
+  state.currentIndex = i;
+  const t = state.queue[i];
+  audio.src = media(t.audioKey);
+  audio.loop = state.repeatOne;
+  $('#nowTitle').textContent = t.title;
+  $('#nowAlbum').textContent = t.album;
+  $('#nowCover').style.backgroundImage = `url('${media(t.coverKey, '/assets/default-cover.jpeg')}')`;
+  audio.play().catch(() => {});
+  setPlayIcon(true);
+  // Highlight track
+  document.querySelectorAll('.track').forEach(b => b.classList.remove('playing'));
+  document.querySelectorAll(`[data-track="${id}"]`).forEach(b => b.classList.add('playing'));
+}
+
+function setPlayIcon(playing) {
+  $('#playIcon').innerHTML = playing
+    ? '<rect x="6" y="4" width="4" height="16" fill="currentColor" stroke="none"/><rect x="14" y="4" width="4" height="16" fill="currentColor" stroke="none"/>'
+    : '<polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/>';
+}
+
+$('#playPause').addEventListener('click', () => {
+  if (!audio.src && state.queue[0]) return playTrack(state.queue[0].id);
+  if (audio.paused) { audio.play(); setPlayIcon(true); }
+  else { audio.pause(); setPlayIcon(false); }
+});
+
+$('#nextTrack').addEventListener('click', () => {
+  if (!state.queue.length) return;
+  playTrack(state.queue[(state.currentIndex + 1) % state.queue.length].id);
+});
+
+$('#prevTrack').addEventListener('click', () => {
+  if (!state.queue.length) return;
+  // Si ha pasado más de 3s, reinicia la canción
+  if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+  const n = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
+  playTrack(state.queue[n].id);
+});
+
+$('#repeatBtn').addEventListener('click', () => {
+  state.repeatOne = !state.repeatOne;
+  audio.loop = state.repeatOne;
+  $('#repeatBtn').classList.toggle('active', state.repeatOne);
+});
+
+audio.addEventListener('ended', () => {
+  if (!state.repeatOne) $('#nextTrack').click();
+});
+
+audio.addEventListener('timeupdate', () => {
+  $('#curTime').textContent = fmt(audio.currentTime);
+  $('#durTime').textContent = fmt(audio.duration);
+  if (audio.duration) $('#seek').value = (audio.currentTime / audio.duration) * 100;
+});
+
+$('#seek').addEventListener('input', () => {
+  if (audio.duration) audio.currentTime = (Number($('#seek').value) / 100) * audio.duration;
+});
+
+/* ── Admin ── */
+$('#openAdmin').addEventListener('click', () => {
+  $('#adminPanel').classList.add('open');
+  if (state.adminPass) setTimeout(() => $('#loginBtn').click(), 100);
+});
+$('#closeAdmin').addEventListener('click', () => $('#adminPanel').classList.remove('open'));
+
+$('#loginBtn').addEventListener('click', async () => {
+  try {
+    state.adminPass = $('#adminPass').value;
+    await api('/api/admin/login', { method: 'POST' });
+    localStorage.setItem('sonara_admin', state.adminPass);
+    $('#loginBox').classList.add('hidden');
+    $('#adminContent').classList.remove('hidden');
+    $('#editAlias').value = state.catalog?.profile?.alias || '';
+    $('#editBio').value   = state.catalog?.profile?.bio || '';
+    $('#loginMsg').textContent = '';
+  } catch (e) {
+    $('#loginMsg').textContent = e.message;
+  }
+});
+
+if (state.adminPass) $('#adminPass').value = state.adminPass;
+
+/* Presign + upload directo a B2 */
+async function presignAndUpload(file, key, onProgress) {
+  const p = await api('/api/admin/presign', {
+    method: 'POST',
+    body: JSON.stringify({ key, contentType: file.type || 'application/octet-stream' })
+  });
+  await new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open('PUT', p.url);
+    x.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    x.upload.onprogress = e => { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
+    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error('Error al subir el archivo. Revisa la configuración CORS del bucket.'));
+    x.onerror = () => reject(new Error('Error de red al subir. Verifica la configuración CORS.'));
+    x.send(file);
+  });
+  return key;
+}
+
+/* Guardar texto del perfil */
+$('#saveProfileText').addEventListener('click', async () => {
+  const msg = $('#profileTextMsg');
+  try {
+    msg.className = 'msg';
+    msg.textContent = 'Guardando...';
+    await api('/api/admin/profile', {
+      method: 'PUT',
+      body: JSON.stringify({ alias: $('#editAlias').value, bio: $('#editBio').value })
+    });
+    msg.className = 'msg ok';
+    msg.textContent = '✓ Guardado.';
+    await load();
+  } catch (e) {
+    msg.className = 'msg err';
+    msg.textContent = e.message;
+  }
+});
+
+/* Subir imágenes de perfil */
+$('#saveImages').addEventListener('click', async () => {
+  const bar = $('#imgProgress'), msg = $('#imgMsg');
+  bar.style.width = '0%'; msg.className = 'msg'; msg.textContent = 'Subiendo imágenes...';
+  try {
+    const patch = {};
+    const fields = [
+      ['avatarFile', 'avatarKey'],
+      ['bannerFile', 'bannerKey'],
+      ['backgroundFile', 'backgroundKey']
+    ];
+    let done = 0;
+    for (const [inputId, field] of fields) {
+      const f = $(`#${inputId}`).files[0];
+      if (f) {
+        const key = `sonara/profile/${field}-${Date.now()}${ext(f.name) || '.jpg'}`;
+        patch[field] = await presignAndUpload(f, key, p => {
+          bar.style.width = Math.round(((done + p) / fields.length) * 100) + '%';
+        });
+        done++;
+      }
+    }
+    if (Object.keys(patch).length === 0) {
+      msg.textContent = 'No seleccionaste ninguna imagen.'; return;
+    }
+    await api('/api/admin/profile', { method: 'PUT', body: JSON.stringify(patch) });
+    bar.style.width = '100%';
+    msg.className = 'msg ok'; msg.textContent = '✓ Imágenes actualizadas.';
+    await load();
+  } catch (e) {
+    msg.className = 'msg err'; msg.textContent = e.message;
+  }
+});
+
+/* Subir álbum completo */
+$('#uploadAlbum').addEventListener('click', async () => {
+  const msg = $('#uploadMsg'), bar = $('#uploadProgress');
+  msg.className = 'msg'; msg.textContent = 'Preparando álbum...';
+  bar.style.width = '0%';
+  try {
+    const title  = $('#albumTitle').value.trim();
+    const year   = $('#albumYear').value.trim();
+    const cover  = $('#coverFile').files[0];
+    const files  = [...$('#folderInput').files].filter(f =>
+      f.type.startsWith('audio/') || /\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(f.name)
+    );
+
+    if (!title)  throw new Error('Falta el título del álbum.');
+    if (!cover)  throw new Error('Falta la carátula.');
+    if (!files.length) throw new Error('La carpeta no contiene archivos de audio.');
+
+    const albumId  = uid('album');
+    const coverKey = `sonara/albums/${albumId}/cover${ext(cover.name) || '.jpg'}`;
+
+    msg.textContent = 'Subiendo carátula...';
+    await presignAndUpload(cover, coverKey, p => bar.style.width = Math.round(p * 8) + '%');
+
+    const tracks = [];
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      msg.textContent = `Subiendo ${i + 1}/${files.length}: ${f.name}`;
+      const key = `sonara/albums/${albumId}/tracks/${String(i + 1).padStart(3,'0')}-${safeName(f.name)}`;
+      await presignAndUpload(f, key, p =>
+        bar.style.width = Math.round(((i + p) / (files.length + 1)) * 100) + '%'
+      );
+      tracks.push({ id: uid('track'), title: f.name.replace(/\.[^.]+$/, ''), audioKey: key });
+    }
+
+    await api('/api/admin/albums', {
+      method: 'POST',
+      body: JSON.stringify({ id: albumId, title, year, coverKey, tracks })
+    });
+
+    bar.style.width = '100%';
+    msg.className = 'msg ok';
+    msg.textContent = `✓ Álbum "${title}" subido con ${tracks.length} canciones.`;
+    $('#albumTitle').value = ''; $('#albumYear').value = '';
+    $('#coverFile').value  = ''; $('#folderInput').value = '';
+    await load();
+  } catch (e) {
+    msg.className = 'msg err'; msg.textContent = e.message;
+  }
+});
+
+/* Render lista admin */
+function renderAdminAlbums() {
+  if (!state.catalog) return;
+  const albums = state.catalog.albums || [];
+  $('#adminAlbums').innerHTML = albums.length
+    ? albums.map(a => `
+        <div class="adminAlbum">
+          <span><b>${esc(a.title)}</b><small>${(a.tracks || []).length} canciones · ${a.year || ''}</small></span>
+          <button class="dangerBtn" data-del="${esc(a.id)}">Borrar del servidor</button>
+        </div>`
+      ).join('')
+    : `<p style="color:var(--muted);font-size:.85rem">No hay álbumes subidos.</p>`;
+
+  document.querySelectorAll('[data-del]').forEach(b =>
+    b.addEventListener('click', async () => {
+      if (!confirm('¿Borrar este álbum del servidor? Esta acción es permanente.')) return;
+      try {
+        await api(`/api/albums/${b.dataset.del}/delete`, { method: 'DELETE' });
+        await load();
+      } catch (e) {
+        alert('Error al borrar: ' + e.message);
+      }
+    })
+  );
+}
+
+/* ── Prevenir descarga por arrastre ── */
+document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
+
+/* ── Arranque ── */
+load().catch(e => {
+  $('#albums').innerHTML = `<div class="empty">Error al cargar SONARA: ${esc(e.message)}<br><small>Verifica las variables de entorno en Vercel.</small></div>`;
+});
+</script>
+</body>
+</html>
