@@ -873,17 +873,14 @@ if (state.adminPass) $('#adminPass').value = state.adminPass;
 
 /* Presign + upload directo a B2 */
 async function presignAndUpload(file, key, onProgress) {
-  const p = await api('/api/admin/presign', {
-    method: 'POST',
-    body: JSON.stringify({ key, contentType: file.type || 'application/octet-stream' })
-  });
+  const url = `/api/admin/upload?key=${encodeURIComponent(key)}&contentType=${encodeURIComponent(file.type || 'application/octet-stream')}`;
   await new Promise((resolve, reject) => {
     const x = new XMLHttpRequest();
-    x.open('PUT', p.url);
-    x.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    x.open('POST', url);
+    x.setRequestHeader('x-admin-password', state.adminPass);
     x.upload.onprogress = e => { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
-    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error('Error al subir el archivo. Revisa la configuración CORS del bucket.'));
-    x.onerror = () => reject(new Error('Error de red al subir. Verifica la configuración CORS.'));
+    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error(`Error ${x.status}: ${x.responseText}`));
+    x.onerror = () => reject(new Error('Error de red. Verifica la conexión.'));
     x.send(file);
   });
   return key;
