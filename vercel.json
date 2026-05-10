@@ -1,6 +1,7 @@
 {
   "functions": {
-    "api/**/*.js": { "maxDuration": 60 }
+    "api/**/*.js": { "maxDuration": 60 },
+    "api/admin/upload.js": { "maxDuration": 60, "memory": 1024 }
   },
   "headers": [
     {
