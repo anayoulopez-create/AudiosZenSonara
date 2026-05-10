@@ -1,4 +1,4 @@
- <!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -836,7 +836,14 @@ $('#openAdmin').addEventListener('click', () => {
   $('#adminPanel').classList.add('open');
   if (state.adminPass) setTimeout(() => $('#loginBtn').click(), 100);
 });
-$('#closeAdmin').addEventListener('click', () => $('#adminPanel').classList.remove('open'));
+$('#closeAdmin').addEventListener('click', () => {
+  $('#adminPanel').classList.remove('open');
+  state.adminPass = '';
+  localStorage.removeItem('sonara_admin');
+  $('#loginBox').classList.remove('hidden');
+  $('#adminContent').classList.add('hidden');
+  $('#adminPass').value = '';
+});
 
 $('#loginBtn').addEventListener('click', async () => {
   try {
