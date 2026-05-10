@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SONARA</title>
-  <meta name="description" content="SONARA — Archivo musical privado" />
+  <meta name="description" content="SONARA ‚Äî Archivo musical privado" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <style>
@@ -37,7 +37,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Overlay neón sobre el fondo */
+    /* Overlay ne√≥n sobre el fondo */
     body::before {
       content: '';
       position: fixed;
@@ -54,10 +54,10 @@
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
 
-    /* ── Layout ── */
+    /* ‚îÄ‚îÄ Layout ‚îÄ‚îÄ */
     .app { width: min(1140px, 100%); margin: 0 auto; padding: 14px 16px; }
 
-    /* ── Topbar ── */
+    /* ‚îÄ‚îÄ Topbar ‚îÄ‚îÄ */
     .top {
       position: sticky; top: 0; z-index: 30;
       display: flex; align-items: center; justify-content: space-between;
@@ -77,7 +77,7 @@
       filter: drop-shadow(0 0 18px rgba(255,43,214,.55)) drop-shadow(0 0 36px rgba(0,229,255,.2));
     }
 
-    /* ── Botones base ── */
+    /* ‚îÄ‚îÄ Botones base ‚îÄ‚îÄ */
     .btn, .pill, .adminBtn {
       border-radius: 999px;
       border: 1px solid var(--line);
@@ -99,7 +99,7 @@
       border-color: rgba(255,43,214,.4);
     }
 
-    /* ── Hero perfil ── */
+    /* ‚îÄ‚îÄ Hero perfil ‚îÄ‚îÄ */
     .hero {
       position: relative;
       overflow: hidden;
@@ -162,7 +162,7 @@
       line-height: 1.6;
     }
 
-    /* ── Sección álbumes ── */
+    /* ‚îÄ‚îÄ Secci√≥n √°lbumes ‚îÄ‚îÄ */
     .sectionHead {
       display: flex;
       align-items: center;
@@ -231,12 +231,12 @@
     .track-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .more-tracks { font-size: .78rem; color: var(--muted); padding: 6px 4px 0; }
 
-    /* ── Paginación ── */
+    /* ‚îÄ‚îÄ Paginaci√≥n ‚îÄ‚îÄ */
     .pager { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 24px 0 8px; }
     .pager .btn { padding: 9px 20px; }
     .pager .pill { padding: 9px 18px; font-size: .85rem; }
 
-    /* ── Player fijo ── */
+    /* ‚îÄ‚îÄ Player fijo ‚îÄ‚îÄ */
     .player {
       position: fixed;
       left: 50%; bottom: 0;
@@ -349,7 +349,7 @@
       cursor: pointer;
     }
 
-    /* ── Panel Admin ── */
+    /* ‚îÄ‚îÄ Panel Admin ‚îÄ‚îÄ */
     .adminPanel {
       position: fixed; inset: 0; z-index: 90;
       background: rgba(0,0,0,.75);
@@ -447,7 +447,7 @@
       grid-column: 1 / -1;
     }
 
-    /* ── Responsive ── */
+    /* ‚îÄ‚îÄ Responsive ‚îÄ‚îÄ */
     @media (max-width: 860px) {
       .albums { grid-template-columns: repeat(2, 1fr); }
       .grid2 { grid-template-columns: 1fr; }
@@ -492,16 +492,16 @@
   </section>
 
   <div class="sectionHead">
-    <h2>Álbumes</h2>
-    <span class="pill" id="albumCount">—</span>
+    <h2>√Ålbumes</h2>
+    <span class="pill" id="albumCount">‚Äî</span>
   </div>
   <section class="albums" id="albums">
     <div class="empty">Cargando...</div>
   </section>
   <div class="pager" id="pager">
-    <button class="btn" id="prevPage">← Anterior</button>
+    <button class="btn" id="prevPage">‚Üê Anterior</button>
     <span class="pill" id="pageInfo">1 / 1</span>
-    <button class="btn" id="nextPage">Siguiente →</button>
+    <button class="btn" id="nextPage">Siguiente ‚Üí</button>
   </div>
 </main>
 
@@ -513,7 +513,7 @@
       <div class="nowCover" id="nowCover"></div>
       <div class="nowText">
         <b id="nowTitle">Nada reproduciendo</b>
-        <span id="nowAlbum">Elige una canción</span>
+        <span id="nowAlbum">Elige una canci√≥n</span>
       </div>
     </div>
 
@@ -532,7 +532,7 @@
         <svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
       </button>
       <!-- Repeat one -->
-      <button class="iconBtn repeatBtn active" id="repeatBtn" title="Repetir canción">
+      <button class="iconBtn repeatBtn active" id="repeatBtn" title="Repetir canci√≥n">
         <svg viewBox="0 0 24 24">
           <polyline points="17,1 21,5 17,9"/>
           <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
@@ -558,15 +558,15 @@
   <div class="panel">
     <div class="panelHead">
       <h2>Admin SONARA</h2>
-      <button class="btn" id="closeAdmin">✕ Cerrar</button>
+      <button class="btn" id="closeAdmin">‚úï Cerrar</button>
     </div>
 
     <!-- Login -->
     <div class="box" id="loginBox">
       <h3>Acceso admin</h3>
       <div class="field">
-        <label>Contraseña</label>
-        <input id="adminPass" type="password" placeholder="Contraseña de admin" />
+        <label>Contrase√±a</label>
+        <input id="adminPass" type="password" placeholder="Contrase√±a de admin" />
       </div>
       <button class="btn" id="loginBtn" style="margin-top:12px">Entrar</button>
       <p class="msg err" id="loginMsg"></p>
@@ -575,57 +575,57 @@
     <!-- Panel autenticado -->
     <div id="adminContent" class="hidden">
   <div style="margin-bottom:12px;text-align:right">
-    <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">🌐 Ir a la web</button>
+    <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">üåê Ir a la web</button>
   </div>
   <div class="panel" style="margin-bottom:16px">
-    <h3 style="margin-bottom:8px">Cambiar contraseña admin</h3>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px">La contraseña se gestiona en Vercel. Ve a:<br><b>vercel.com → proyecto → Environment Variables → ADMIN_PASSWORD</b></p>
+    <h3 style="margin-bottom:8px">Cambiar contrase√±a admin</h3>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px">La contrase√±a se gestiona en Vercel. Ve a:<br><b>vercel.com ‚Üí proyecto ‚Üí Environment Variables ‚Üí ADMIN_PASSWORD</b></p>
   </div>
 
       <div class="grid2">
         <!-- Texto del perfil -->
         <div class="box">
-          <h3>Perfil — Texto</h3>
+          <h3>Perfil ‚Äî Texto</h3>
           <div class="field"><label>Alias / Nombre</label><input id="editAlias" /></div>
-          <div class="field"><label>Biografía</label><textarea id="editBio"></textarea></div>
+          <div class="field"><label>Biograf√≠a</label><textarea id="editBio"></textarea></div>
           <button class="btn" id="saveProfileText" style="margin-top:14px">Guardar texto</button>
           <p class="msg" id="profileTextMsg"></p>
         </div>
 
-        <!-- Imágenes -->
+        <!-- Im√°genes -->
         <div class="box">
-          <h3>Imágenes del perfil</h3>
-          <div class="field"><label>Avatar (círculo)</label><input id="avatarFile" type="file" accept="image/*" /></div>
+          <h3>Im√°genes del perfil</h3>
+          <div class="field"><label>Avatar (c√≠rculo)</label><input id="avatarFile" type="file" accept="image/*" /></div>
           <div class="field"><label>Banner (cabecera)</label><input id="bannerFile" type="file" accept="image/*" /></div>
           <div class="field"><label>Fondo de pantalla</label><input id="backgroundFile" type="file" accept="image/*" /></div>
-          <button class="btn" id="saveImages" style="margin-top:14px">Subir y reemplazar imágenes</button>
+          <button class="btn" id="saveImages" style="margin-top:14px">Subir y reemplazar im√°genes</button>
           <div class="progress"><i id="imgProgress"></i></div>
           <p class="msg" id="imgMsg"></p>
         </div>
       </div>
 
-      <!-- Subir álbum -->
+      <!-- Subir √°lbum -->
       <div class="box">
-        <h3>Subir álbum completo</h3>
+        <h3>Subir √°lbum completo</h3>
         <div class="grid2">
-          <div class="field"><label>Título del álbum</label><input id="albumTitle" placeholder="Nombre del álbum" /></div>
-          <div class="field"><label>Año</label><input id="albumYear" placeholder="2025" /></div>
+          <div class="field"><label>T√≠tulo del √°lbum</label><input id="albumTitle" placeholder="Nombre del √°lbum" /></div>
+          <div class="field"><label>A√±o</label><input id="albumYear" placeholder="2025" /></div>
         </div>
-        <div class="field"><label>Carátula del álbum</label><input id="coverFile" type="file" accept="image/*" /></div>
+        <div class="field"><label>Car√°tula del √°lbum</label><input id="coverFile" type="file" accept="image/*" /></div>
         <div class="drop">
-          <b>📁 Carpeta de canciones</b>
-          <p>Selecciona la carpeta completa. Todos los MP3 heredan la carátula elegida arriba.</p>
+          <b>üìÅ Carpeta de canciones</b>
+          <p>Selecciona la carpeta completa. Todos los MP3 heredan la car√°tula elegida arriba.</p>
           <input id="folderInput" type="file" webkitdirectory directory multiple accept="audio/*" style="margin-top:10px" />
         </div>
-        <button class="btn" id="uploadAlbum" style="margin-top:14px">Subir álbum completo</button>
+        <button class="btn" id="uploadAlbum" style="margin-top:14px">Subir √°lbum completo</button>
         <div class="progress"><i id="uploadProgress"></i></div>
         <p class="msg" id="uploadMsg"></p>
       </div>
 
-      <!-- Lista álbumes admin -->
+      <!-- Lista √°lbumes admin -->
       <div class="box">
-        <h3>Álbumes en servidor</h3>
-        <div id="adminAlbums"><p style="color:var(--muted);font-size:.85rem">Cargando álbumes...</p></div>
+        <h3>√Ålbumes en servidor</h3>
+        <div id="adminAlbums"><p style="color:var(--muted);font-size:.85rem">Cargando √°lbumes...</p></div>
       </div>
 
     </div><!-- /adminContent -->
@@ -633,7 +633,7 @@
 </aside>
 
 <script>
-/* ── Utilidades ── */
+/* ‚îÄ‚îÄ Utilidades ‚îÄ‚îÄ */
 const $ = s => document.querySelector(s);
 function esc(v) {
   return String(v ?? '').replace(/[&<>'"]/g, c =>
@@ -652,7 +652,7 @@ function safeName(n) {
     .replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-');
 }
 
-/* ── State ── */
+/* ‚îÄ‚îÄ State ‚îÄ‚îÄ */
 const state = {
   catalog: null,
   page: 1,
@@ -663,11 +663,11 @@ const state = {
   adminPass: localStorage.getItem('sonara_admin') || ''
 };
 
-/* ── Audio ── */
+/* ‚îÄ‚îÄ Audio ‚îÄ‚îÄ */
 const audio = $('#audio');
 audio.loop = true;
 
-/* ── API ── */
+/* ‚îÄ‚îÄ API ‚îÄ‚îÄ */
 async function api(path, opt = {}) {
   const headers = { ...(opt.headers || {}) };
   if (state.adminPass) headers['x-admin-password'] = state.adminPass;
@@ -678,13 +678,13 @@ async function api(path, opt = {}) {
   return data;
 }
 
-/* ── Media proxy URL ── */
+/* ‚îÄ‚îÄ Media proxy URL ‚îÄ‚îÄ */
 function media(key, fallback = '') {
   if (!key) return fallback;
   return `/api/media/${encodeURIComponent(key).replaceAll('%2F', '/')}`;
 }
 
-/* ── Cargar catálogo ── */
+/* ‚îÄ‚îÄ Cargar cat√°logo ‚îÄ‚îÄ */
 async function load() {
   state.catalog = await api('/api/catalog');
   applyProfile();
@@ -711,7 +711,7 @@ function buildQueue() {
   );
 }
 
-/* ── Lazy load covers ── */
+/* ‚îÄ‚îÄ Lazy load covers ‚îÄ‚îÄ */
 function lazyImg(el, src) {
   if (!src) return;
   el.classList.add('loading');
@@ -721,10 +721,10 @@ function lazyImg(el, src) {
   img.src = src;
 }
 
-/* ── Render álbumes ── */
+/* ‚îÄ‚îÄ Render √°lbumes ‚îÄ‚îÄ */
 function renderAlbums() {
   const albums = state.catalog.albums || [];
-  $('#albumCount').textContent = `${albums.length} álbum${albums.length === 1 ? '' : 'es'}`;
+  $('#albumCount').textContent = `${albums.length} √°lbum${albums.length === 1 ? '' : 'es'}`;
 
   const pages = Math.max(1, Math.ceil(albums.length / state.perPage));
   state.page = Math.min(state.page, pages);
@@ -734,7 +734,7 @@ function renderAlbums() {
   const slice = albums.slice((state.page - 1) * state.perPage, state.page * state.perPage);
 
   if (!slice.length) {
-    $('#albums').innerHTML = `<div class="empty">Todavía no hay álbumes.<br>Entra en <b>Admin</b> y sube una carpeta completa.</div>`;
+    $('#albums').innerHTML = `<div class="empty">Todav√≠a no hay √°lbumes.<br>Entra en <b>Admin</b> y sube una carpeta completa.</div>`;
     return;
   }
 
@@ -744,14 +744,14 @@ function renderAlbums() {
     return `<article class="album" data-album-id="${esc(a.id)}">
       <div class="cover" data-cover="${esc(media(a.coverKey, '/assets/default-cover.jpeg'))}"></div>
       <h3>${esc(a.title)}</h3>
-      <small>${esc(a.year || '')}${a.year ? ' · ' : ''}${(a.tracks || []).length} canciones</small>
+      <small>${esc(a.year || '')}${a.year ? ' ¬∑ ' : ''}${(a.tracks || []).length} canciones</small>
       ${tracksToShow.map(t =>
         `<button class="track" data-track="${esc(t.id)}">
-          <span class="track-icon">▶</span>
+          <span class="track-icon">‚ñ∂</span>
           <span class="track-name">${esc(t.title)}</span>
         </button>`
       ).join('')}
-      ${extra > 0 ? `<p class="more-tracks">+ ${extra} canciones más</p>` : ''}
+      ${extra > 0 ? `<p class="more-tracks">+ ${extra} canciones m√°s</p>` : ''}
     </article>`;
   }).join('');
 
@@ -766,7 +766,7 @@ function renderAlbums() {
   );
 }
 
-/* ── Paginación ── */
+/* ‚îÄ‚îÄ Paginaci√≥n ‚îÄ‚îÄ */
 $('#prevPage').addEventListener('click', () => {
   if (state.page > 1) { state.page--; renderAlbums(); scrollTo({ top: 0, behavior: 'smooth' }); }
 });
@@ -775,7 +775,7 @@ $('#nextPage').addEventListener('click', () => {
   if (state.page < pages) { state.page++; renderAlbums(); scrollTo({ top: 0, behavior: 'smooth' }); }
 });
 
-/* ── Reproductor ── */
+/* ‚îÄ‚îÄ Reproductor ‚îÄ‚îÄ */
 function playTrack(id) {
   const i = state.queue.findIndex(t => String(t.id) === String(id));
   if (i < 0) return;
@@ -812,7 +812,7 @@ $('#nextTrack').addEventListener('click', () => {
 
 $('#prevTrack').addEventListener('click', () => {
   if (!state.queue.length) return;
-  // Si ha pasado más de 3s, reinicia la canción
+  // Si ha pasado m√°s de 3s, reinicia la canci√≥n
   if (audio.currentTime > 3) { audio.currentTime = 0; return; }
   const n = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
   playTrack(state.queue[n].id);
@@ -838,7 +838,7 @@ $('#seek').addEventListener('input', () => {
   if (audio.duration) audio.currentTime = (Number($('#seek').value) / 100) * audio.duration;
 });
 
-/* ── Admin ── */
+/* ‚îÄ‚îÄ Admin ‚îÄ‚îÄ */
 $('#openAdmin').addEventListener('click', () => {
   $('#adminPanel').classList.add('open');
   if (state.adminPass) setTimeout(() => $('#loginBtn').click(), 100);
@@ -873,14 +873,27 @@ if (state.adminPass) $('#adminPass').value = state.adminPass;
 
 /* Presign + upload directo a B2 */
 async function presignAndUpload(file, key, onProgress) {
-  const url = `/api/admin/upload?key=${encodeURIComponent(key)}&contentType=${encodeURIComponent(file.type || 'application/octet-stream')}`;
+  // 1. Pedir la URL firmada a Vercel
+  const contentType = file.type || 'application/octet-stream';
+  const presignRes = await fetch('/api/admin/presign', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-admin-password': state.adminPass },
+    body: JSON.stringify({ key, contentType })
+  });
+  if (!presignRes.ok) {
+    const err = await presignRes.json().catch(() => ({}));
+    throw new Error(err.error || `Error al obtener URL de subida (${presignRes.status})`);
+  }
+  const { url } = await presignRes.json();
+
+  // 2. Subir el archivo directo a Backblaze con la URL firmada
   await new Promise((resolve, reject) => {
     const x = new XMLHttpRequest();
-    x.open('POST', url);
-    x.setRequestHeader('x-admin-password', state.adminPass);
+    x.open('PUT', url);
+    x.setRequestHeader('Content-Type', contentType);
     x.upload.onprogress = e => { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
-    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error(`Error ${x.status}: ${x.responseText}`));
-    x.onerror = () => reject(new Error('Error de red. Verifica la conexión.'));
+    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error(`Error al subir a Backblaze (${x.status})`));
+    x.onerror = () => reject(new Error('Error de red al subir. Verifica la configuraci√≥n CORS.'));
     x.send(file);
   });
   return key;
@@ -897,7 +910,7 @@ $('#saveProfileText').addEventListener('click', async () => {
       body: JSON.stringify({ alias: $('#editAlias').value, bio: $('#editBio').value })
     });
     msg.className = 'msg ok';
-    msg.textContent = '✓ Guardado.';
+    msg.textContent = '‚úì Guardado.';
     await load();
   } catch (e) {
     msg.className = 'msg err';
@@ -905,10 +918,10 @@ $('#saveProfileText').addEventListener('click', async () => {
   }
 });
 
-/* Subir imágenes de perfil */
+/* Subir im√°genes de perfil */
 $('#saveImages').addEventListener('click', async () => {
   const bar = $('#imgProgress'), msg = $('#imgMsg');
-  bar.style.width = '0%'; msg.className = 'msg'; msg.textContent = 'Subiendo imágenes...';
+  bar.style.width = '0%'; msg.className = 'msg'; msg.textContent = 'Subiendo im√°genes...';
   try {
     const patch = {};
     const fields = [
@@ -932,17 +945,17 @@ $('#saveImages').addEventListener('click', async () => {
     }
     await api('/api/admin/profile', { method: 'PUT', body: JSON.stringify(patch) });
     bar.style.width = '100%';
-    msg.className = 'msg ok'; msg.textContent = '✓ Imágenes actualizadas.';
+    msg.className = 'msg ok'; msg.textContent = '‚úì Im√°genes actualizadas.';
     await load();
   } catch (e) {
     msg.className = 'msg err'; msg.textContent = e.message;
   }
 });
 
-/* Subir álbum completo */
+/* Subir √°lbum completo */
 $('#uploadAlbum').addEventListener('click', async () => {
   const msg = $('#uploadMsg'), bar = $('#uploadProgress');
-  msg.className = 'msg'; msg.textContent = 'Preparando álbum...';
+  msg.className = 'msg'; msg.textContent = 'Preparando √°lbum...';
   bar.style.width = '0%';
   try {
     const title  = $('#albumTitle').value.trim();
@@ -952,14 +965,14 @@ $('#uploadAlbum').addEventListener('click', async () => {
       f.type.startsWith('audio/') || /\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(f.name)
     );
 
-    if (!title)  throw new Error('Falta el título del álbum.');
-    if (!cover)  throw new Error('Falta la carátula.');
+    if (!title)  throw new Error('Falta el t√≠tulo del √°lbum.');
+    if (!cover)  throw new Error('Falta la car√°tula.');
     if (!files.length) throw new Error('La carpeta no contiene archivos de audio.');
 
     const albumId  = uid('album');
     const coverKey = `sonara/albums/${albumId}/cover${ext(cover.name) || '.jpg'}`;
 
-    msg.textContent = 'Subiendo carátula...';
+    msg.textContent = 'Subiendo car√°tula...';
     await presignAndUpload(cover, coverKey, p => bar.style.width = Math.round(p * 8) + '%');
 
     const tracks = [];
@@ -980,7 +993,7 @@ $('#uploadAlbum').addEventListener('click', async () => {
 
     bar.style.width = '100%';
     msg.className = 'msg ok';
-    msg.textContent = `✓ Álbum "${title}" subido con ${tracks.length} canciones.`;
+    msg.textContent = `‚úì √Ålbum "${title}" subido con ${tracks.length} canciones.`;
     $('#albumTitle').value = ''; $('#albumYear').value = '';
     $('#coverFile').value  = ''; $('#folderInput').value = '';
     await load();
@@ -996,15 +1009,15 @@ function renderAdminAlbums() {
   $('#adminAlbums').innerHTML = albums.length
     ? albums.map(a => `
         <div class="adminAlbum">
-          <span><b>${esc(a.title)}</b><small>${(a.tracks || []).length} canciones · ${a.year || ''}</small></span>
+          <span><b>${esc(a.title)}</b><small>${(a.tracks || []).length} canciones ¬∑ ${a.year || ''}</small></span>
           <button class="dangerBtn" data-del="${esc(a.id)}">Borrar del servidor</button>
         </div>`
       ).join('')
-    : `<p style="color:var(--muted);font-size:.85rem">No hay álbumes subidos.</p>`;
+    : `<p style="color:var(--muted);font-size:.85rem">No hay √°lbumes subidos.</p>`;
 
   document.querySelectorAll('[data-del]').forEach(b =>
     b.addEventListener('click', async () => {
-      if (!confirm('¿Borrar este álbum del servidor? Esta acción es permanente.')) return;
+      if (!confirm('¬øBorrar este √°lbum del servidor? Esta acci√≥n es permanente.')) return;
       try {
         await api(`/api/albums/${b.dataset.del}/delete`, { method: 'DELETE' });
         await load();
@@ -1015,13 +1028,15 @@ function renderAdminAlbums() {
   );
 }
 
-/* ── Prevenir descarga por arrastre ── */
+/* ‚îÄ‚îÄ Prevenir descarga por arrastre ‚îÄ‚îÄ */
 document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
 
-/* ── Arranque ── */
+/* ‚îÄ‚îÄ Arranque ‚îÄ‚îÄ */
 load().catch(e => {
   $('#albums').innerHTML = `<div class="empty">Error al cargar SONARA: ${esc(e.message)}<br><small>Verifica las variables de entorno en Vercel.</small></div>`;
 });
 </script>
 </body>
 </html>
+    Mac OS X            	   2       >                                      ATTR      >  @  ˛                 @     com.apple.lastuseddate#PS      P   H  com.apple.macl     ò   5  )com.apple.metadata:kMDItemDownloadedDate   Õ  1  %com.apple.metadata:kMDItemWhereFroms   ˛   @  com.apple.quarantine `¿ j    Äpë    @>‘ì&>K$¶Jò±ëÙœ«                                                      bplist00°3A«ÿ{"æœ
+                            bplist00¢_øhttps://claude.ai/api/organizations/31dfb989-0594-4f37-8d1f-3224e8648016/conversations/61658386-ba06-42d5-b03e-6442328088fd/wiggle/download-file?path=%2Fmnt%2Fuser-data%2Foutputs%2Findex.html_;https://claude.ai/chat/61658386-ba06-42d5-b03e-6442328088fd   Õ                           q/0083;6a00c060;Web\x20App;C010CC09-0AA1-481F-BBFD-4512DCBE7469 
