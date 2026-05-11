@@ -3,50 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>SONARA</title>
-  <meta name="description" content="SONARA  Archivo musical privado" />
+  <title>MissAB</title>
+  <meta name="description" content="MissAB — Productor Musical IA" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
       --pink: #ff2bd6;
+      --pink2: #ff6ef7;
       --cyan: #00e5ff;
-      --bg: #050308;
-      --text: #fff7ff;
-      --muted: #c4b3cc;
-      --glass: rgba(10,6,16,.76);
-      --line: rgba(255,255,255,.11);
-      --player-h: 90px;
+      --bg: #080508;
+      --text: #fff0fe;
+      --muted: #b89ab6;
+      --glass: rgba(16,8,18,.82);
+      --line: rgba(255,43,214,.15);
+      --player-h: 88px;
       --danger: #ff4778;
-      --radius-lg: 28px;
-      --radius-md: 18px;
-      --radius-sm: 12px;
+      --r-lg: 20px;
+      --r-md: 14px;
+      --r-sm: 10px;
+      --sidebar-w: 260px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
       min-height: 100vh;
       color: var(--text);
-      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: var(--bg) center/cover fixed no-repeat;
-      padding-bottom: calc(var(--player-h) + env(safe-area-inset-bottom) + 24px);
+      font-family: 'DM Sans', ui-sans-serif, sans-serif;
+      background: var(--bg);
+      padding-bottom: calc(var(--player-h) + env(safe-area-inset-bottom) + 16px);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
     }
 
-    /* Overlay neón sobre el fondo */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       z-index: -1;
       background:
-        radial-gradient(circle at 15% 5%, rgba(255,43,214,.32), transparent 36rem),
-        radial-gradient(circle at 90% 20%, rgba(0,229,255,.22), transparent 30rem),
-        linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.88) 60%, #050308);
+        radial-gradient(ellipse 60% 50% at 10% 0%, rgba(255,43,214,.18), transparent),
+        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(0,229,255,.08), transparent),
+        var(--bg);
     }
 
     button, input, textarea { font: inherit; }
@@ -54,461 +55,506 @@
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
 
-    /*  Layout  */
-    .app { width: min(1140px, 100%); margin: 0 auto; padding: 14px 16px; }
-
-    /*  Topbar  */
-    .top {
-      position: sticky; top: 0; z-index: 30;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0 14px;
-      backdrop-filter: blur(14px);
+    /* ── Sidebar ── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      padding: 36px 24px calc(var(--player-h) + 24px);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--line);
+      background: rgba(8,5,10,.95);
+      backdrop-filter: blur(20px);
+      z-index: 20;
+      overflow-y: auto;
     }
 
-    .brand {
-      font-weight: 900;
-      font-size: clamp(2.4rem, 8vw, 6rem);
-      letter-spacing: .07em;
-      line-height: .9;
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
       background: linear-gradient(135deg, var(--pink) 20%, var(--cyan) 80%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(0 0 18px rgba(255,43,214,.55)) drop-shadow(0 0 36px rgba(0,229,255,.2));
+      filter: drop-shadow(0 0 12px rgba(255,43,214,.5));
+      margin-bottom: 36px;
     }
 
-    /*  Botones base  */
-    .btn, .pill, .adminBtn {
+    .profile-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+
+    .avatar-lg {
+      width: 96px; height: 96px;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.09);
-      color: var(--text);
-      padding: 10px 18px;
-      font-weight: 700;
-      font-size: .88rem;
-      transition: .15s background, .15s border-color, .15s box-shadow;
-      white-space: nowrap;
-    }
-    .btn:hover, .adminBtn:hover {
-      background: rgba(255,43,214,.18);
-      border-color: rgba(255,43,214,.5);
-      box-shadow: 0 0 18px rgba(255,43,214,.25);
-    }
-    .adminBtn {
-      background: linear-gradient(135deg, rgba(255,43,214,.25), rgba(0,229,255,.12));
-      border-color: rgba(255,43,214,.4);
-    }
-
-    /*  Hero perfil  */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      background: var(--glass);
-      box-shadow: 0 30px 90px rgba(0,0,0,.6), 0 0 60px rgba(255,43,214,.07);
-      min-height: 360px;
-    }
-
-    .banner {
-      height: 220px;
-      background: #1a0f24 center/cover no-repeat;
-      position: relative;
-    }
-    .banner::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(5,3,8,.95));
-    }
-
-    .profile {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 20px;
-      align-items: end;
-      padding: 0 28px 28px;
-      margin-top: -62px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .avatar {
-      width: 128px; height: 128px;
-      border-radius: 999px;
-      border: 4px solid rgba(255,255,255,.9);
-      background: #17101f center/cover no-repeat;
-      box-shadow: 0 0 28px rgba(255,43,214,.65), 0 0 60px rgba(0,229,255,.2);
-      overflow: hidden;
+      background: #1a0a1e center/cover no-repeat;
+      border: 2px solid rgba(255,43,214,.5);
+      box-shadow: 0 0 24px rgba(255,43,214,.4), 0 0 60px rgba(255,43,214,.1);
       flex-shrink: 0;
     }
 
-    .meta h1 {
-      font-size: clamp(2rem, 7vw, 4.5rem);
-      font-weight: 900;
-      line-height: .92;
-      letter-spacing: -.04em;
-      background: linear-gradient(135deg, #fff 60%, rgba(255,43,214,.8));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .profile-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: .04em;
     }
 
-    .meta p {
-      margin-top: 14px;
-      max-width: 720px;
+    .profile-role {
+      font-size: .75rem;
+      color: var(--pink2);
+      text-align: center;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .profile-bio {
+      font-size: .8rem;
       color: var(--muted);
-      font-size: .98rem;
-      line-height: 1.6;
+      text-align: center;
+      line-height: 1.5;
     }
 
-    /*  Sección álbumes  */
-    .sectionHead {
+    .sidebar-section {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .album-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+    }
+
+    .album-nav-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 28px 2px 16px;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: background .15s;
     }
-    .sectionHead h2 { font-size: 1.3rem; font-weight: 700; }
+    .album-nav-item:hover { background: rgba(255,43,214,.1); }
+    .album-nav-item.active { background: rgba(255,43,214,.16); color: var(--pink2); }
 
-    .albums {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
+    .album-nav-thumb {
+      width: 36px; height: 36px;
+      border-radius: 6px;
+      background: #1a0a1e center/cover no-repeat;
+      flex-shrink: 0;
     }
 
-    .album {
+    .album-nav-info b { display: block; font-size: .84rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+    .album-nav-info span { font-size: .74rem; color: var(--muted); }
+
+    .adminBtn {
+      margin-top: 20px;
+      padding: 10px 16px;
+      border-radius: 999px;
       border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      background: rgba(12,8,20,.78);
-      padding: 14px;
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-      transition: transform .2s, border-color .2s, box-shadow .2s;
+      background: rgba(255,43,214,.1);
+      color: var(--pink2);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      transition: background .15s;
+      text-align: center;
     }
-    .album:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,43,214,.5);
-      box-shadow: 0 20px 50px rgba(0,0,0,.4), 0 0 24px rgba(255,43,214,.12);
+    .adminBtn:hover { background: rgba(255,43,214,.22); }
+
+    /* ── Main ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      padding: 40px 36px 24px;
     }
 
-    .cover {
-      aspect-ratio: 1;
-      border-radius: var(--radius-sm);
-      background: #15101e center/cover no-repeat;
-      box-shadow: 0 12px 30px rgba(0,0,0,.4);
-      overflow: hidden;
-    }
-    /* Lazy load placeholder shimmer */
-    .cover.loading {
-      background: linear-gradient(90deg, #1a0f28 25%, #2a183a 50%, #1a0f28 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-    }
-    @keyframes shimmer { to { background-position: -200% 0; } }
-
-    .album h3 { margin: 12px 2px 4px; font-size: .95rem; font-weight: 700; }
-    .album small { display: block; margin: 0 2px 12px; color: var(--muted); font-size: .8rem; }
-
-    .track {
-      width: 100%;
+    .album-header {
       display: flex;
-      align-items: center;
-      gap: 9px;
-      text-align: left;
-      color: var(--text);
-      background: rgba(255,255,255,.055);
-      border: 1px solid rgba(255,255,255,.07);
-      padding: 9px 11px;
-      border-radius: 11px;
-      margin-top: 7px;
-      font-size: .84rem;
-      transition: background .15s, border-color .15s;
+      align-items: flex-end;
+      gap: 28px;
+      margin-bottom: 32px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line);
     }
-    .track:hover { background: rgba(255,43,214,.18); border-color: rgba(255,43,214,.35); }
-    .track.playing { background: rgba(255,43,214,.22); border-color: rgba(255,43,214,.55); }
-    .track-icon { color: var(--pink); flex-shrink: 0; font-size: .9rem; }
-    .track-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .more-tracks { font-size: .78rem; color: var(--muted); padding: 6px 4px 0; }
 
-    /*  Paginación  */
-    .pager { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 24px 0 8px; }
-    .pager .btn { padding: 9px 20px; }
-    .pager .pill { padding: 9px 18px; font-size: .85rem; }
+    .album-cover-lg {
+      width: 200px; height: 200px;
+      border-radius: var(--r-md);
+      background: #1a0a1e center/cover no-repeat;
+      flex-shrink: 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(255,43,214,.12);
+    }
 
-    /*  Player fijo  */
+    .album-meta .type-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .album-meta h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      line-height: .95;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+    }
+    .album-detail {
+      font-size: .86rem;
+      color: var(--muted);
+    }
+    .album-detail span { color: var(--pink2); font-weight: 600; }
+
+    .play-big {
+      width: 54px; height: 54px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      color: #08030a;
+      display: grid;
+      place-items: center;
+      margin-top: 18px;
+      box-shadow: 0 0 28px rgba(255,43,214,.5);
+      transition: transform .15s, box-shadow .15s;
+      border: none;
+    }
+    .play-big:hover { transform: scale(1.07); box-shadow: 0 0 40px rgba(255,43,214,.7); }
+    .play-big svg { width: 22px; height: 22px; fill: currentColor; }
+
+    /* ── Tracks ── */
+    .tracks-header {
+      display: grid;
+      grid-template-columns: 40px 1fr 80px;
+      gap: 12px;
+      padding: 0 12px 10px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 4px;
+    }
+
+    .track-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 80px;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .track-row:hover { background: rgba(255,43,214,.08); }
+    .track-row.playing { background: rgba(255,43,214,.14); color: var(--pink2); }
+
+    .track-num {
+      font-size: .84rem;
+      color: var(--muted);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .track-row.playing .track-num { color: var(--pink); }
+
+    .track-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .track-thumb {
+      width: 40px; height: 40px;
+      border-radius: 6px;
+      background: #1a0a1e center/cover no-repeat;
+      flex-shrink: 0;
+    }
+    .track-text b { display: block; font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+    .track-text small { font-size: .76rem; color: var(--muted); }
+
+    .track-dur {
+      font-size: .8rem;
+      color: var(--muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    /* ── Player ── */
     .player {
       position: fixed;
-      left: 50%; bottom: 0;
-      transform: translateX(-50%);
+      left: 0; right: 0; bottom: 0;
       z-index: 50;
-      width: min(1140px, 100%);
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, transparent, rgba(5,3,8,.93) 22%, rgba(5,3,8,.99));
-      backdrop-filter: blur(20px);
+      padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, transparent, rgba(5,3,8,.96) 20%);
+      backdrop-filter: blur(24px);
     }
 
     .playerInner {
+      max-width: 1200px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.2fr 1.7fr 1.2fr;
+      grid-template-columns: 1fr 1.6fr 1fr;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
       border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(18,10,28,.92);
-      padding: 11px 14px;
-      box-shadow: 0 -18px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+      border-radius: 16px;
+      background: rgba(12,6,16,.96);
+      padding: 10px 16px;
+      box-shadow: 0 -12px 50px rgba(0,0,0,.5);
     }
 
-    /* Nowplaying */
     .now { display: flex; align-items: center; gap: 12px; min-width: 0; }
     .nowCover {
-      width: 52px; height: 52px;
-      border-radius: 12px;
+      width: 44px; height: 44px;
+      border-radius: 7px;
       background: #17101f center/cover no-repeat;
       flex-shrink: 0;
-      box-shadow: 0 4px 16px rgba(0,0,0,.4);
     }
-    .nowText { min-width: 0; }
     .nowText b, .nowText span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .nowText b { font-size: .92rem; }
-    .nowText span { font-size: .78rem; color: var(--muted); margin-top: 3px; }
+    .nowText b { font-size: .86rem; font-weight: 500; }
+    .nowText span { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 
-    /* Controls */
-    .controls { display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .controls { display: flex; align-items: center; justify-content: center; gap: 8px; }
 
     .iconBtn {
-      width: 42px; height: 42px;
+      width: 36px; height: 36px;
       border-radius: 999px;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
       display: grid; place-items: center;
-      transition: background .15s, box-shadow .15s, transform .1s;
+      transition: background .15s, transform .1s;
     }
-    .iconBtn:hover { background: rgba(255,43,214,.2); }
+    .iconBtn:hover { background: rgba(255,43,214,.18); }
     .iconBtn:active { transform: scale(.92); }
-    .iconBtn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .iconBtn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
     .playBtn {
-      width: 52px; height: 52px;
+      width: 46px; height: 46px;
       background: linear-gradient(135deg, var(--pink), var(--cyan));
       color: #08030a;
-      box-shadow: 0 0 22px rgba(255,43,214,.45);
+      box-shadow: 0 0 18px rgba(255,43,214,.4);
+      border: none;
     }
-    .playBtn:hover { box-shadow: 0 0 32px rgba(255,43,214,.65); }
-    .playBtn svg { width: 22px; height: 22px; }
+    .playBtn svg { width: 19px; height: 19px; }
+    .repeatBtn.active { color: var(--pink); border-color: rgba(255,43,214,.4); }
 
-    .repeatBtn { position: relative; }
-    .repeatBtn.active {
-      color: var(--pink);
-      border-color: rgba(255,43,214,.5);
-      box-shadow: 0 0 16px rgba(255,43,214,.3);
-    }
-    .repeatBtn.active::after {
-      content: '1';
-      position: absolute;
-      right: 7px; bottom: 6px;
-      width: 13px; height: 13px;
-      border-radius: 999px;
-      background: var(--pink);
-      color: #07030a;
-      font-size: 8px;
-      font-weight: 900;
-      display: grid;
-      place-items: center;
-      line-height: 1;
-    }
-
-    /* Progress bar */
-    .barWrap { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
-    .time { font-size: .73rem; color: var(--muted); min-width: 36px; text-align: center; }
+    .barWrap { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+    .time { font-size: .68rem; color: var(--muted); min-width: 32px; text-align: center; font-variant-numeric: tabular-nums; }
 
     .range {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 5px;
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 4px;
       border-radius: 999px;
-      background: rgba(255,255,255,.16);
-      outline: none;
-      cursor: pointer;
+      background: rgba(255,255,255,.14);
+      outline: none; cursor: pointer;
     }
     .range::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 15px; height: 15px;
+      width: 12px; height: 12px;
       border-radius: 999px;
       background: var(--pink);
-      box-shadow: 0 0 14px rgba(255,43,214,.8);
+      box-shadow: 0 0 10px rgba(255,43,214,.8);
       cursor: pointer;
     }
     .range::-moz-range-thumb {
-      width: 15px; height: 15px;
+      width: 12px; height: 12px;
       border-radius: 999px;
-      background: var(--pink);
-      border: none;
-      cursor: pointer;
+      background: var(--pink); border: none;
     }
 
-    /*  Panel Admin  */
+    /* ── Admin ── */
     .adminPanel {
       position: fixed; inset: 0; z-index: 90;
-      background: rgba(0,0,0,.75);
-      backdrop-filter: blur(12px);
-      display: none;
-      align-items: flex-start;
-      justify-content: center;
-      overflow-y: auto;
-      padding: 20px 12px;
+      background: rgba(0,0,0,.82);
+      backdrop-filter: blur(14px);
+      display: none; align-items: flex-start; justify-content: center;
+      overflow-y: auto; padding: 20px 12px;
     }
     .adminPanel.open { display: flex; }
 
     .panel {
-      width: min(980px, 100%);
+      width: min(960px, 100%);
       border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      background: #0e0816;
+      border-radius: var(--r-lg);
+      background: #0c0610;
       box-shadow: 0 30px 100px rgba(0,0,0,.8);
-      padding: 22px;
-      margin: auto;
+      padding: 24px; margin: auto;
     }
 
     .panelHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
-    .panelHead h2 { font-size: 1.3rem; }
+    .panelHead h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.07);
+      color: var(--text);
+      padding: 9px 18px;
+      font-weight: 600; font-size: .84rem;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: rgba(255,43,214,.16); border-color: rgba(255,43,214,.4); }
 
     .box {
       border: 1px solid var(--line);
-      border-radius: 20px;
-      background: rgba(255,255,255,.04);
-      padding: 16px;
-      margin-top: 16px;
+      border-radius: var(--r-md);
+      background: rgba(255,255,255,.03);
+      padding: 16px; margin-top: 16px;
     }
-    .box h3 { font-size: 1rem; margin-bottom: 12px; }
-
+    .box h3 { font-size: .92rem; font-weight: 700; margin-bottom: 12px; }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
     .field { display: grid; gap: 6px; margin-top: 12px; }
-    .field label { font-size: .82rem; color: var(--muted); font-weight: 700; letter-spacing: .02em; }
+    .field label { font-size: .76rem; color: var(--muted); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
     .field input, .field textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      background: rgba(0,0,0,.32);
-      color: var(--text);
-      padding: 11px 13px;
-      outline: 0;
-      transition: border-color .15s;
+      width: 100%; border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      background: rgba(0,0,0,.4); color: var(--text);
+      padding: 10px 12px; outline: 0; transition: border-color .15s;
     }
-    .field input:focus, .field textarea:focus { border-color: rgba(255,43,214,.55); }
-    .field textarea { min-height: 88px; resize: vertical; }
+    .field input:focus, .field textarea:focus { border-color: rgba(255,43,214,.5); }
+    .field textarea { min-height: 80px; resize: vertical; }
 
     .drop {
-      border: 1px dashed rgba(255,43,214,.5);
-      border-radius: 18px;
-      padding: 20px;
-      text-align: center;
-      background: rgba(255,43,214,.05);
-      margin-top: 12px;
+      border: 1px dashed rgba(255,43,214,.4);
+      border-radius: var(--r-md); padding: 18px;
+      text-align: center; background: rgba(255,43,214,.04); margin-top: 12px;
     }
     .drop b { color: var(--pink); display: block; margin-bottom: 6px; }
-    .drop p { font-size: .84rem; color: var(--muted); }
+    .drop p { font-size: .8rem; color: var(--muted); }
 
-    .progress { height: 9px; border-radius: 999px; background: rgba(255,255,255,.1); overflow: hidden; margin-top: 12px; }
+    .progress { height: 8px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 12px; }
     .progress > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--cyan)); transition: width .15s; }
 
     .adminAlbum {
       display: flex; gap: 12px; align-items: center; justify-content: space-between;
-      border: 1px solid var(--line); border-radius: 14px; padding: 11px 13px; margin-top: 9px;
+      border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; margin-top: 8px;
     }
-    .adminAlbum span { font-size: .88rem; }
-    .adminAlbum small { display: block; color: var(--muted); font-size: .75rem; margin-top: 2px; }
+    .adminAlbum span { font-size: .84rem; }
+    .adminAlbum small { display: block; color: var(--muted); font-size: .72rem; margin-top: 2px; }
 
     .dangerBtn {
-      background: rgba(255,71,120,.14);
-      color: #ffd0de;
-      border: 1px solid rgba(255,71,120,.35);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: .82rem;
-      font-weight: 700;
-      transition: background .15s;
-      white-space: nowrap;
+      background: rgba(255,71,120,.12); color: #ffd0de;
+      border: 1px solid rgba(255,71,120,.3);
+      border-radius: 999px; padding: 7px 13px;
+      font-size: .78rem; font-weight: 700;
+      transition: background .15s; white-space: nowrap;
     }
-    .dangerBtn:hover { background: rgba(255,71,120,.28); }
+    .dangerBtn:hover { background: rgba(255,71,120,.25); }
 
-    .msg { margin-top: 10px; font-size: .85rem; color: var(--muted); min-height: 20px; }
+    .msg { margin-top: 10px; font-size: .82rem; color: var(--muted); min-height: 18px; }
     .msg.ok { color: var(--cyan); }
     .msg.err { color: var(--danger); }
-
     .hidden { display: none !important; }
-    .empty {
-      border: 1px solid var(--line); border-radius: 22px;
-      background: rgba(255,255,255,.04);
-      padding: 40px; text-align: center; color: var(--muted);
-      grid-column: 1 / -1;
-    }
 
-    /*  Responsive  */
-    @media (max-width: 860px) {
-      .albums { grid-template-columns: repeat(2, 1fr); }
-      .grid2 { grid-template-columns: 1fr; }
-      .playerInner { grid-template-columns: 1fr; gap: 10px; }
+    /* Shimmer */
+    .shimmer {
+      background: linear-gradient(90deg, #1a0a22 25%, #2a1035 50%, #1a0a22 75%) !important;
+      background-size: 200% 100% !important;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* ── Responsive ── */
+    @media (max-width: 780px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 16px; }
+      .album-cover-lg { width: 120px; height: 120px; }
+      .album-header { gap: 16px; }
+      .album-meta h1 { font-size: 1.6rem; }
+      .tracks-header, .track-row { grid-template-columns: 30px 1fr 56px; }
+      .track-thumb { width: 34px; height: 34px; }
+      .playerInner { grid-template-columns: 1fr; gap: 8px; }
       .barWrap { order: 3; justify-content: center; }
       .controls { order: 1; }
       .now { order: 2; justify-content: center; }
-      .brand { font-size: 3.2rem; }
-      .banner { height: 180px; }
-      .profile { grid-template-columns: 1fr; text-align: center; justify-items: center; margin-top: -58px; padding: 0 18px 22px; }
-      .avatar { width: 110px; height: 110px; }
+      .grid2 { grid-template-columns: 1fr; }
+      .mobile-top { display: flex !important; }
     }
-    @media (max-width: 440px) {
-      .app { padding: 10px 12px; }
-      .albums { grid-template-columns: 1fr; }
-      .brand { font-size: 2.5rem; }
-      .hero { border-radius: 20px; }
-      .banner { height: 155px; }
-      .meta h1 { font-size: 2.1rem; }
-      .panel { padding: 16px; }
-      .player { padding-left: 10px; padding-right: 10px; }
+
+    .mobile-top {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .mobile-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.3rem;
+      letter-spacing: .1em;
+      background: linear-gradient(135deg, var(--pink) 20%, var(--cyan) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   </style>
 </head>
 <body>
 
-<main class="app">
-  <div class="top">
-    <div class="brand">SONARA</div>
-    <button class="adminBtn" id="openAdmin">Admin</button>
+<aside class="sidebar">
+  <div class="logo">MissAB</div>
+  <div class="profile-wrap">
+    <div class="avatar-lg" id="avatar"></div>
+    <div class="profile-name" id="alias">MissAB</div>
+    <div class="profile-role">Productor Musical IA</div>
+    <p class="profile-bio" id="bio"></p>
+  </div>
+  <div class="sidebar-section">Álbumes</div>
+  <ul class="album-nav" id="albumNav"></ul>
+  <button class="adminBtn" id="openAdmin">Admin</button>
+</aside>
+
+<main class="main">
+  <div class="mobile-top">
+    <span class="mobile-logo">MissAB</span>
+    <button class="btn" id="openAdminMobile" style="font-size:.78rem;padding:7px 13px">Admin</button>
   </div>
 
-  <section class="hero">
-    <div class="banner" id="banner"></div>
-    <div class="profile">
-      <div class="avatar" id="avatar"></div>
-      <div class="meta">
-        <h1 id="alias">SONARA</h1>
-        <p id="bio">Archivo musical privado, visual y persistente.</p>
-      </div>
+  <div class="album-header">
+    <div class="album-cover-lg shimmer" id="albumCoverLg"></div>
+    <div class="album-meta">
+      <div class="type-label">Álbum</div>
+      <h1 id="albumTitle">Cargando...</h1>
+      <div class="album-detail" id="albumDetail"></div>
+      <button class="play-big" id="playBig">
+        <svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
+      </button>
     </div>
-  </section>
+  </div>
 
-  <div class="sectionHead">
-    <h2>Álbumes</h2>
-    <span class="pill" id="albumCount"></span>
+  <div class="tracks-header">
+    <span style="text-align:center">#</span>
+    <span>Título</span>
+    <span style="text-align:right">Duración</span>
   </div>
-  <section class="albums" id="albums">
-    <div class="empty">Cargando...</div>
-  </section>
-  <div class="pager" id="pager">
-    <button class="btn" id="prevPage"> Anterior</button>
-    <span class="pill" id="pageInfo">1 / 1</span>
-    <button class="btn" id="nextPage">Siguiente </button>
-  </div>
+  <div id="trackList"></div>
 </main>
 
-<!-- Player -->
 <footer class="player">
   <div class="playerInner">
-    <!-- Now playing -->
     <div class="now">
       <div class="nowCover" id="nowCover"></div>
       <div class="nowText">
@@ -516,33 +562,20 @@
         <span id="nowAlbum">Elige una canción</span>
       </div>
     </div>
-
-    <!-- Controls -->
     <div class="controls">
-      <!-- Prev -->
-      <button class="iconBtn" id="prevTrack" title="Anterior">
+      <button class="iconBtn" id="prevTrack">
         <svg viewBox="0 0 24 24"><polygon points="19,20 9,12 19,4"/><line x1="5" y1="4" x2="5" y2="20"/></svg>
       </button>
-      <!-- Play/Pause -->
-      <button class="iconBtn playBtn" id="playPause" title="Play/Pausa">
-        <svg id="playIcon" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/></svg>
+      <button class="iconBtn playBtn" id="playPause">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6,3 20,12 6,21"/></svg>
       </button>
-      <!-- Next -->
-      <button class="iconBtn" id="nextTrack" title="Siguiente">
+      <button class="iconBtn" id="nextTrack">
         <svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
       </button>
-      <!-- Repeat one -->
-      <button class="iconBtn repeatBtn active" id="repeatBtn" title="Repetir canción">
-        <svg viewBox="0 0 24 24">
-          <polyline points="17,1 21,5 17,9"/>
-          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-          <polyline points="7,23 3,19 7,15"/>
-          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
-        </svg>
+      <button class="iconBtn repeatBtn active" id="repeatBtn">
+        <svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </button>
     </div>
-
-    <!-- Progress bar -->
     <div class="barWrap">
       <span class="time" id="curTime">0:00</span>
       <input class="range" id="seek" type="range" min="0" max="100" value="0" />
@@ -553,68 +586,55 @@
 
 <audio id="audio" preload="metadata"></audio>
 
-<!-- Admin Panel -->
 <aside class="adminPanel" id="adminPanel">
   <div class="panel">
     <div class="panelHead">
-      <h2>Admin SONARA</h2>
-      <button class="btn" id="closeAdmin"> Cerrar</button>
+      <h2>Admin MissAB</h2>
+      <button class="btn" id="closeAdmin">Cerrar</button>
     </div>
 
-    <!-- Login -->
     <div class="box" id="loginBox">
       <h3>Acceso admin</h3>
       <div class="field">
         <label>Contraseña</label>
-        <input id="adminPass" type="password" placeholder="Contraseña de admin" />
+        <input id="adminPass" type="password" placeholder="Contraseña" />
       </div>
       <button class="btn" id="loginBtn" style="margin-top:12px">Entrar</button>
       <p class="msg err" id="loginMsg"></p>
     </div>
 
-    <!-- Panel autenticado -->
     <div id="adminContent" class="hidden">
-  <div style="margin-bottom:12px;text-align:right">
-    <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">🌐 Ir a la web</button>
-  </div>
-  <div class="panel" style="margin-bottom:16px">
-    <h3 style="margin-bottom:8px">Cambiar contraseña admin</h3>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px">La contraseña se gestiona en Vercel. Ve a:<br><b>vercel.com  proyecto  Environment Variables  ADMIN_PASSWORD</b></p>
-  </div>
-
+      <div style="margin-bottom:12px;text-align:right">
+        <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">🌐 Ir a la web</button>
+      </div>
       <div class="grid2">
-        <!-- Texto del perfil -->
         <div class="box">
-          <h3>Perfil  Texto</h3>
-          <div class="field"><label>Alias / Nombre</label><input id="editAlias" /></div>
+          <h3>Perfil — Texto</h3>
+          <div class="field"><label>Nombre</label><input id="editAlias" placeholder="MissAB" /></div>
           <div class="field"><label>Biografía</label><textarea id="editBio"></textarea></div>
-          <button class="btn" id="saveProfileText" style="margin-top:14px">Guardar texto</button>
+          <button class="btn" id="saveProfileText" style="margin-top:14px">Guardar</button>
           <p class="msg" id="profileTextMsg"></p>
         </div>
-
-        <!-- Imágenes -->
         <div class="box">
-          <h3>Imágenes del perfil</h3>
-          <div class="field"><label>Avatar (círculo)</label><input id="avatarFile" type="file" accept="image/*" /></div>
-          <div class="field"><label>Banner (cabecera)</label><input id="bannerFile" type="file" accept="image/*" /></div>
-          <div class="field"><label>Fondo de pantalla</label><input id="backgroundFile" type="file" accept="image/*" /></div>
-          <button class="btn" id="saveImages" style="margin-top:14px">Subir y reemplazar imágenes</button>
+          <h3>Imágenes</h3>
+          <div class="field"><label>Avatar</label><input id="avatarFile" type="file" accept="image/*" /></div>
+          <div class="field"><label>Fondo</label><input id="backgroundFile" type="file" accept="image/*" /></div>
+          <button class="btn" id="saveImages" style="margin-top:14px">Subir imágenes</button>
           <div class="progress"><i id="imgProgress"></i></div>
           <p class="msg" id="imgMsg"></p>
         </div>
       </div>
 
-      <!-- Subir álbum -->
       <div class="box">
-        <h3>Subir álbum completo</h3>
+        <h3>Subir álbum</h3>
         <div class="grid2">
-          <div class="field"><label>Título del álbum</label><input id="albumTitle" placeholder="Nombre del álbum" /></div>
+          <div class="field"><label>Título</label><input id="albumTitleInput" placeholder="Nombre del álbum" /></div>
           <div class="field"><label>Año</label><input id="albumYear" placeholder="2025" /></div>
         </div>
-        <div class="field"><label>Carátula del álbum</label><input id="coverFile" type="file" accept="image/*" /></div>
+        <div class="field"><label>Carátula</label><input id="coverFile" type="file" accept="image/*" /></div>
         <div class="drop">
           <b>📁 Carpeta de canciones</b>
-          <p>Selecciona la carpeta completa. Todos los MP3 heredan la carátula elegida arriba.</p>
+          <p>Selecciona la carpeta completa. Todos los MP3 heredan la carátula elegida.</p>
           <input id="folderInput" type="file" webkitdirectory directory multiple accept="audio/*" style="margin-top:10px" />
         </div>
         <button class="btn" id="uploadAlbum" style="margin-top:14px">Subir álbum completo</button>
@@ -622,160 +642,160 @@
         <p class="msg" id="uploadMsg"></p>
       </div>
 
-      <!-- Lista álbumes admin -->
       <div class="box">
         <h3>Álbumes en servidor</h3>
-        <div id="adminAlbums"><p style="color:var(--muted);font-size:.85rem">Cargando álbumes...</p></div>
+        <div id="adminAlbums"><p style="color:var(--muted);font-size:.84rem">Cargando...</p></div>
       </div>
-
-    </div><!-- /adminContent -->
+    </div>
   </div>
 </aside>
 
 <script>
-/*  Utilidades  */
 const $ = s => document.querySelector(s);
-function esc(v) {
-  return String(v ?? '').replace(/[&<>'"]/g, c =>
-    ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[c])
-  );
-}
-function fmt(s) {
-  if (!isFinite(s) || s < 0) return '0:00';
-  const m = Math.floor(s / 60), r = Math.floor(s % 60);
-  return `${m}:${String(r).padStart(2,'0')}`;
-}
-function uid(p='id') { return `${p}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
-function ext(name) { return (name.match(/\.[a-z0-9]+$/i) || [''])[0].toLowerCase(); }
-function safeName(n) {
-  return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-');
-}
+function esc(v) { return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function fmt(s) { if(!isFinite(s)||s<0)return'0:00'; const m=Math.floor(s/60),r=Math.floor(s%60); return `${m}:${String(r).padStart(2,'0')}`; }
+function uid(p='id'){return`${p}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;}
+function ext(n){return(n.match(/\.[a-z0-9]+$/i)||[''])[0].toLowerCase();}
+function safeName(n){return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-');}
 
-/*  State  */
 const state = {
-  catalog: null,
-  page: 1,
-  perPage: 8,
-  queue: [],
-  currentIndex: -1,
-  repeatOne: true,
+  catalog: null, queue: [], currentIndex: -1,
+  repeatOne: true, selectedAlbumId: null,
   adminPass: localStorage.getItem('sonara_admin') || ''
 };
 
-/*  Audio  */
 const audio = $('#audio');
 audio.loop = true;
 
-/*  API  */
-async function api(path, opt = {}) {
-  const headers = { ...(opt.headers || {}) };
+async function api(path, opt={}) {
+  const headers = {...(opt.headers||{})};
   if (state.adminPass) headers['x-admin-password'] = state.adminPass;
   if (opt.body && !(opt.body instanceof FormData)) headers['Content-Type'] = 'application/json';
-  const r = await fetch(path, { ...opt, headers });
-  const data = await r.json().catch(() => ({}));
+  const r = await fetch(path, {...opt, headers});
+  const data = await r.json().catch(()=>({}));
   if (!r.ok) throw new Error(data.error || `Error ${r.status}`);
   return data;
 }
 
-/*  Media proxy URL  */
-function media(key, fallback = '') {
+function media(key, fallback='') {
   if (!key) return fallback;
-  return `/api/media/${encodeURIComponent(key).replaceAll('%2F', '/')}`;
+  return `/api/media/${encodeURIComponent(key).replaceAll('%2F','/')}`;
 }
 
-/*  Cargar catálogo  */
+function lazyBg(el, src) {
+  if (!src) return;
+  el.classList.add('shimmer');
+  const img = new Image();
+  img.onload = () => { el.style.backgroundImage = `url('${src}')`; el.classList.remove('shimmer'); };
+  img.onerror = () => el.classList.remove('shimmer');
+  img.src = src;
+}
+
 async function load() {
   state.catalog = await api('/api/catalog');
   applyProfile();
   buildQueue();
-  renderAlbums();
+  renderSidebar();
+  const albums = state.catalog.albums || [];
+  if (albums.length) selectAlbum(state.selectedAlbumId || albums[0].id);
+  else renderEmpty();
   renderAdminAlbums();
 }
 
 function applyProfile() {
   const p = state.catalog.profile || {};
-  $('#alias').textContent = p.alias || 'SONARA';
-  $('#bio').textContent   = p.bio || '';
-  $('#avatar').style.backgroundImage   = `url('${media(p.avatarKey, '/assets/avatar.jpeg')}')`;
-  $('#banner').style.backgroundImage   = `url('${media(p.bannerKey, '/assets/banner.jpeg')}')`;
-  document.body.style.backgroundImage  = `url('${media(p.backgroundKey, '/assets/background.jpeg')}')`;
+  $('#alias').textContent = p.alias || 'MissAB';
+  $('#bio').textContent = p.bio || '';
+  lazyBg($('#avatar'), media(p.avatarKey, '/assets/avatar.jpeg'));
+  if (p.backgroundKey) {
+    document.body.style.backgroundImage = `url('${media(p.backgroundKey)}')`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundAttachment = 'fixed';
+  }
 }
 
 function buildQueue() {
   state.queue = [];
-  (state.catalog.albums || []).forEach(a =>
-    (a.tracks || []).forEach(t =>
-      state.queue.push({ ...t, album: a.title, coverKey: a.coverKey, albumId: a.id })
+  (state.catalog.albums||[]).forEach(a =>
+    (a.tracks||[]).forEach(t =>
+      state.queue.push({...t, album: a.title, coverKey: a.coverKey, albumId: a.id})
     )
   );
 }
 
-/*  Lazy load covers  */
-function lazyImg(el, src) {
-  if (!src) return;
-  el.classList.add('loading');
-  const img = new Image();
-  img.onload = () => { el.style.backgroundImage = `url('${src}')`; el.classList.remove('loading'); };
-  img.onerror = () => { el.classList.remove('loading'); };
-  img.src = src;
-}
-
-/*  Render álbumes  */
-function renderAlbums() {
+function renderSidebar() {
   const albums = state.catalog.albums || [];
-  $('#albumCount').textContent = `${albums.length} álbum${albums.length === 1 ? '' : 'es'}`;
-
-  const pages = Math.max(1, Math.ceil(albums.length / state.perPage));
-  state.page = Math.min(state.page, pages);
-  $('#pageInfo').textContent = `${state.page} / ${pages}`;
-  $('#pager').style.display = albums.length > state.perPage ? 'flex' : 'none';
-
-  const slice = albums.slice((state.page - 1) * state.perPage, state.page * state.perPage);
-
-  if (!slice.length) {
-    $('#albums').innerHTML = `<div class="empty">Todavía no hay álbumes.<br>Entra en <b>Admin</b> y sube una carpeta completa.</div>`;
-    return;
-  }
-
-  $('#albums').innerHTML = slice.map(a => {
-    const tracksToShow = (a.tracks || []).slice(0, 5);
-    const extra = (a.tracks || []).length - 5;
-    return `<article class="album" data-album-id="${esc(a.id)}">
-      <div class="cover" data-cover="${esc(media(a.coverKey, '/assets/default-cover.jpeg'))}"></div>
-      <h3>${esc(a.title)}</h3>
-      <small>${esc(a.year || '')}${a.year ? ' · ' : ''}${(a.tracks || []).length} canciones</small>
-      ${tracksToShow.map(t =>
-        `<button class="track" data-track="${esc(t.id)}">
-          <span class="track-icon">▶</span>
-          <span class="track-name">${esc(t.title)}</span>
-        </button>`
-      ).join('')}
-      ${extra > 0 ? `<p class="more-tracks">+ ${extra} canciones más</p>` : ''}
-    </article>`;
-  }).join('');
-
-  // Lazy load covers
-  document.querySelectorAll('.cover[data-cover]').forEach(el => {
-    lazyImg(el, el.dataset.cover);
-  });
-
-  // Track click handlers
-  document.querySelectorAll('[data-track]').forEach(b =>
-    b.addEventListener('click', () => playTrack(b.dataset.track))
+  const nav = $('#albumNav');
+  if (!albums.length) { nav.innerHTML = `<li style="color:var(--muted);font-size:.82rem;padding:8px 10px">Sin álbumes</li>`; return; }
+  nav.innerHTML = albums.map(a => `
+    <li class="album-nav-item${state.selectedAlbumId===a.id?' active':''}" data-nav="${esc(a.id)}">
+      <div class="album-nav-thumb shimmer" data-thumb="${esc(media(a.coverKey,'/assets/default-cover.jpeg'))}"></div>
+      <div class="album-nav-info">
+        <b>${esc(a.title)}</b>
+        <span>${a.year||''} · ${(a.tracks||[]).length} canciones</span>
+      </div>
+    </li>`).join('');
+  nav.querySelectorAll('[data-thumb]').forEach(el => lazyBg(el, el.dataset.thumb));
+  nav.querySelectorAll('[data-nav]').forEach(el =>
+    el.addEventListener('click', () => selectAlbum(el.dataset.nav))
   );
 }
 
-/*  Paginación  */
-$('#prevPage').addEventListener('click', () => {
-  if (state.page > 1) { state.page--; renderAlbums(); scrollTo({ top: 0, behavior: 'smooth' }); }
-});
-$('#nextPage').addEventListener('click', () => {
-  const pages = Math.ceil((state.catalog?.albums?.length || 0) / state.perPage);
-  if (state.page < pages) { state.page++; renderAlbums(); scrollTo({ top: 0, behavior: 'smooth' }); }
-});
+function selectAlbum(id) {
+  state.selectedAlbumId = id;
+  const album = (state.catalog.albums||[]).find(a => a.id === id);
+  if (!album) return;
+  document.querySelectorAll('.album-nav-item').forEach(el =>
+    el.classList.toggle('active', el.dataset.nav === id)
+  );
+  const coverEl = $('#albumCoverLg');
+  coverEl.style.backgroundImage = '';
+  lazyBg(coverEl, media(album.coverKey, '/assets/default-cover.jpeg'));
+  $('#albumTitle').textContent = album.title;
+  $('#albumDetail').innerHTML = album.year ? `<span>${esc(album.year)}</span> · ${(album.tracks||[]).length} canciones` : `${(album.tracks||[]).length} canciones`;
+  $('#playBig').onclick = () => { const f=(album.tracks||[])[0]; if(f) playTrack(f.id); };
 
-/*  Reproductor  */
+  const tracks = album.tracks || [];
+  if (!tracks.length) { $('#trackList').innerHTML = `<div class="empty-state">Este álbum no tiene canciones.</div>`; return; }
+
+  $('#trackList').innerHTML = tracks.map((t,i) => `
+    <div class="track-row" data-track="${esc(t.id)}">
+      <div class="track-num">${i+1}</div>
+      <div class="track-info">
+        <div class="track-thumb shimmer" data-thumb="${esc(media(album.coverKey,'/assets/default-cover.jpeg'))}"></div>
+        <div class="track-text">
+          <b>${esc(t.title)}</b>
+          <small>${esc(album.title)}</small>
+        </div>
+      </div>
+      <div class="track-dur" id="dur-${esc(t.id)}">—</div>
+    </div>`).join('');
+
+  document.querySelectorAll('.track-thumb[data-thumb]').forEach(el => lazyBg(el, el.dataset.thumb));
+  document.querySelectorAll('[data-track]').forEach(el =>
+    el.addEventListener('click', () => playTrack(el.dataset.track))
+  );
+  loadDurations(tracks);
+}
+
+function loadDurations(tracks) {
+  tracks.forEach(t => {
+    const a = new Audio();
+    a.preload = 'metadata';
+    a.src = media(t.audioKey);
+    a.addEventListener('loadedmetadata', () => {
+      const el = $(`#dur-${t.id}`);
+      if (el) el.textContent = fmt(a.duration);
+    });
+  });
+}
+
+function renderEmpty() {
+  $('#albumTitle').textContent = 'Sin álbumes';
+  $('#albumDetail').textContent = '';
+  $('#trackList').innerHTML = `<div class="empty-state">Entra en <b>Admin</b> y sube tu primer álbum.</div>`;
+}
+
 function playTrack(id) {
   const i = state.queue.findIndex(t => String(t.id) === String(id));
   if (i < 0) return;
@@ -785,12 +805,12 @@ function playTrack(id) {
   audio.loop = state.repeatOne;
   $('#nowTitle').textContent = t.title;
   $('#nowAlbum').textContent = t.album;
-  $('#nowCover').style.backgroundImage = `url('${media(t.coverKey, '/assets/default-cover.jpeg')}')`;
-  audio.play().catch(() => {});
+  lazyBg($('#nowCover'), media(t.coverKey, '/assets/default-cover.jpeg'));
+  audio.play().catch(()=>{});
   setPlayIcon(true);
-  // Highlight track
-  document.querySelectorAll('.track').forEach(b => b.classList.remove('playing'));
-  document.querySelectorAll(`[data-track="${id}"]`).forEach(b => b.classList.add('playing'));
+  document.querySelectorAll('.track-row').forEach(el => el.classList.remove('playing'));
+  document.querySelectorAll(`[data-track="${id}"]`).forEach(el => el.classList.add('playing'));
+  if (t.albumId !== state.selectedAlbumId) selectAlbum(t.albumId);
 }
 
 function setPlayIcon(playing) {
@@ -804,49 +824,36 @@ $('#playPause').addEventListener('click', () => {
   if (audio.paused) { audio.play(); setPlayIcon(true); }
   else { audio.pause(); setPlayIcon(false); }
 });
-
 $('#nextTrack').addEventListener('click', () => {
   if (!state.queue.length) return;
-  playTrack(state.queue[(state.currentIndex + 1) % state.queue.length].id);
+  playTrack(state.queue[(state.currentIndex+1)%state.queue.length].id);
 });
-
 $('#prevTrack').addEventListener('click', () => {
   if (!state.queue.length) return;
-  // Si ha pasado más de 3s, reinicia la canción
   if (audio.currentTime > 3) { audio.currentTime = 0; return; }
-  const n = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
-  playTrack(state.queue[n].id);
+  playTrack(state.queue[(state.currentIndex-1+state.queue.length)%state.queue.length].id);
 });
-
 $('#repeatBtn').addEventListener('click', () => {
   state.repeatOne = !state.repeatOne;
   audio.loop = state.repeatOne;
   $('#repeatBtn').classList.toggle('active', state.repeatOne);
 });
-
-audio.addEventListener('ended', () => {
-  if (!state.repeatOne) $('#nextTrack').click();
-});
-
+audio.addEventListener('ended', () => { if (!state.repeatOne) $('#nextTrack').click(); });
 audio.addEventListener('timeupdate', () => {
   $('#curTime').textContent = fmt(audio.currentTime);
   $('#durTime').textContent = fmt(audio.duration);
-  if (audio.duration) $('#seek').value = (audio.currentTime / audio.duration) * 100;
+  if (audio.duration) $('#seek').value = (audio.currentTime/audio.duration)*100;
 });
-
 $('#seek').addEventListener('input', () => {
-  if (audio.duration) audio.currentTime = (Number($('#seek').value) / 100) * audio.duration;
+  if (audio.duration) audio.currentTime = (Number($('#seek').value)/100)*audio.duration;
 });
 
-/*  Admin  */
-$('#openAdmin').addEventListener('click', () => {
-  $('#adminPanel').classList.add('open');
-  if (state.adminPass) setTimeout(() => $('#loginBtn').click(), 100);
-});
+function openAdmin() { $('#adminPanel').classList.add('open'); if(state.adminPass) setTimeout(()=>$('#loginBtn').click(),100); }
+$('#openAdmin').addEventListener('click', openAdmin);
+$('#openAdminMobile').addEventListener('click', openAdmin);
 $('#closeAdmin').addEventListener('click', () => {
   $('#adminPanel').classList.remove('open');
-  state.adminPass = '';
-  localStorage.removeItem('sonara_admin');
+  state.adminPass = ''; localStorage.removeItem('sonara_admin');
   $('#loginBox').classList.remove('hidden');
   $('#adminContent').classList.add('hidden');
   $('#adminPass').value = '';
@@ -860,180 +867,114 @@ $('#loginBtn').addEventListener('click', async () => {
     $('#loginBox').classList.add('hidden');
     $('#adminContent').classList.remove('hidden');
     $('#editAlias').value = state.catalog?.profile?.alias || '';
-    $('#editBio').value   = state.catalog?.profile?.bio || '';
+    $('#editBio').value = state.catalog?.profile?.bio || '';
     $('#loginMsg').textContent = '';
-  } catch (e) {
-    $('#loginMsg').textContent = e.message;
-  }
+  } catch(e) { $('#loginMsg').textContent = e.message; }
 });
-
 if (state.adminPass) $('#adminPass').value = state.adminPass;
 
-
-
-/* Presign + upload directo a B2 */
 async function presignAndUpload(file, key, onProgress) {
-  // 1. Pedir la URL firmada a Vercel
   const contentType = file.type || 'application/octet-stream';
   const presignRes = await fetch('/api/admin/presign', {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-admin-password': state.adminPass },
-    body: JSON.stringify({ key, contentType })
+    headers: {'content-type':'application/json','x-admin-password':state.adminPass},
+    body: JSON.stringify({key, contentType})
   });
-  if (!presignRes.ok) {
-    const err = await presignRes.json().catch(() => ({}));
-    throw new Error(err.error || `Error al obtener URL de subida (${presignRes.status})`);
-  }
-  const { url } = await presignRes.json();
-
-  // 2. Subir el archivo directo a R2 (Cloudflare) con la URL firmada
-  await new Promise((resolve, reject) => {
+  if (!presignRes.ok) { const err=await presignRes.json().catch(()=>({})); throw new Error(err.error||`Error ${presignRes.status}`); }
+  const {url} = await presignRes.json();
+  await new Promise((resolve,reject) => {
     const x = new XMLHttpRequest();
     x.open('PUT', url);
     x.setRequestHeader('Content-Type', contentType);
-    x.upload.onprogress = e => { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
-    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error(`Error al subir a R2 (${x.status})`));
-    x.onerror = () => reject(new Error('Error de red al subir. Verifica la configuración CORS.'));
+    x.upload.onprogress = e => { if(e.lengthComputable&&onProgress) onProgress(e.loaded/e.total); };
+    x.onload = () => x.status>=200&&x.status<300 ? resolve() : reject(new Error(`Error al subir a R2 (${x.status})`));
+    x.onerror = () => reject(new Error('Error de red. Verifica CORS en R2.'));
     x.send(file);
   });
   return key;
 }
 
-/* Guardar texto del perfil */
 $('#saveProfileText').addEventListener('click', async () => {
   const msg = $('#profileTextMsg');
   try {
-    msg.className = 'msg';
-    msg.textContent = 'Guardando...';
-    await api('/api/admin/profile', {
-      method: 'PUT',
-      body: JSON.stringify({ alias: $('#editAlias').value, bio: $('#editBio').value })
-    });
-    msg.className = 'msg ok';
-    msg.textContent = ' Guardado.';
+    msg.className='msg'; msg.textContent='Guardando...';
+    await api('/api/admin/profile',{method:'PUT',body:JSON.stringify({alias:$('#editAlias').value,bio:$('#editBio').value})});
+    msg.className='msg ok'; msg.textContent='✓ Guardado.';
     await load();
-  } catch (e) {
-    msg.className = 'msg err';
-    msg.textContent = e.message;
-  }
+  } catch(e) { msg.className='msg err'; msg.textContent=e.message; }
 });
 
-/* Subir imágenes de perfil */
 $('#saveImages').addEventListener('click', async () => {
-  const bar = $('#imgProgress'), msg = $('#imgMsg');
-  bar.style.width = '0%'; msg.className = 'msg'; msg.textContent = 'Subiendo imágenes...';
+  const bar=$('#imgProgress'),msg=$('#imgMsg');
+  bar.style.width='0%'; msg.className='msg'; msg.textContent='Subiendo...';
   try {
-    const patch = {};
-    const fields = [
-      ['avatarFile', 'avatarKey'],
-      ['bannerFile', 'bannerKey'],
-      ['backgroundFile', 'backgroundKey']
-    ];
-    let done = 0;
-    for (const [inputId, field] of fields) {
-      const f = $(`#${inputId}`).files[0];
-      if (f) {
-        const key = `sonara/profile/${field}-${Date.now()}${ext(f.name) || '.jpg'}`;
-        patch[field] = await presignAndUpload(f, key, p => {
-          bar.style.width = Math.round(((done + p) / fields.length) * 100) + '%';
-        });
+    const patch={};
+    const fields=[['avatarFile','avatarKey'],['backgroundFile','backgroundKey']];
+    let done=0;
+    for(const [inputId,field] of fields){
+      const f=$(`#${inputId}`).files[0];
+      if(f){
+        const key=`sonara/profile/${field}-${Date.now()}${ext(f.name)||'.jpg'}`;
+        patch[field]=await presignAndUpload(f,key,p=>{bar.style.width=Math.round(((done+p)/fields.length)*100)+'%';});
         done++;
       }
     }
-    if (Object.keys(patch).length === 0) {
-      msg.textContent = 'No seleccionaste ninguna imagen.'; return;
-    }
-    await api('/api/admin/profile', { method: 'PUT', body: JSON.stringify(patch) });
-    bar.style.width = '100%';
-    msg.className = 'msg ok'; msg.textContent = ' Imágenes actualizadas.';
+    if(!Object.keys(patch).length){msg.textContent='No seleccionaste ninguna imagen.';return;}
+    await api('/api/admin/profile',{method:'PUT',body:JSON.stringify(patch)});
+    bar.style.width='100%'; msg.className='msg ok'; msg.textContent='✓ Imágenes actualizadas.';
     await load();
-  } catch (e) {
-    msg.className = 'msg err'; msg.textContent = e.message;
-  }
+  } catch(e) { msg.className='msg err'; msg.textContent=e.message; }
 });
 
-/* Subir álbum completo */
 $('#uploadAlbum').addEventListener('click', async () => {
-  const msg = $('#uploadMsg'), bar = $('#uploadProgress');
-  msg.className = 'msg'; msg.textContent = 'Preparando álbum...';
-  bar.style.width = '0%';
+  const msg=$('#uploadMsg'),bar=$('#uploadProgress');
+  msg.className='msg'; msg.textContent='Preparando álbum...'; bar.style.width='0%';
   try {
-    const title  = $('#albumTitle').value.trim();
-    const year   = $('#albumYear').value.trim();
-    const cover  = $('#coverFile').files[0];
-    const files  = [...$('#folderInput').files].filter(f =>
-      f.type.startsWith('audio/') || /\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(f.name)
-    );
-
-    if (!title)  throw new Error('Falta el título del álbum.');
-    if (!cover)  throw new Error('Falta la carátula.');
-    if (!files.length) throw new Error('La carpeta no contiene archivos de audio.');
-
-    const albumId  = uid('album');
-    const coverKey = `sonara/albums/${albumId}/cover${ext(cover.name) || '.jpg'}`;
-
-    msg.textContent = 'Subiendo carátula...';
-    await presignAndUpload(cover, coverKey, p => bar.style.width = Math.round(p * 8) + '%');
-
-    const tracks = [];
-    for (let i = 0; i < files.length; i++) {
-      const f = files[i];
-      msg.textContent = `Subiendo ${i + 1}/${files.length}: ${f.name}`;
-      const key = `sonara/albums/${albumId}/tracks/${String(i + 1).padStart(3,'0')}-${safeName(f.name)}`;
-      await presignAndUpload(f, key, p =>
-        bar.style.width = Math.round(((i + p) / (files.length + 1)) * 100) + '%'
-      );
-      tracks.push({ id: uid('track'), title: f.name.replace(/\.[^.]+$/, ''), audioKey: key });
+    const title=$('#albumTitleInput').value.trim();
+    const year=$('#albumYear').value.trim();
+    const cover=$('#coverFile').files[0];
+    const files=[...$('#folderInput').files].filter(f=>f.type.startsWith('audio/')||/\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(f.name));
+    if(!title) throw new Error('Falta el título.');
+    if(!cover) throw new Error('Falta la carátula.');
+    if(!files.length) throw new Error('La carpeta no tiene archivos de audio.');
+    const albumId=uid('album');
+    const coverKey=`sonara/albums/${albumId}/cover${ext(cover.name)||'.jpg'}`;
+    msg.textContent='Subiendo carátula...';
+    await presignAndUpload(cover,coverKey,p=>bar.style.width=Math.round(p*8)+'%');
+    const tracks=[];
+    for(let i=0;i<files.length;i++){
+      const f=files[i];
+      msg.textContent=`Subiendo ${i+1}/${files.length}: ${f.name}`;
+      const key=`sonara/albums/${albumId}/tracks/${String(i+1).padStart(3,'0')}-${safeName(f.name)}`;
+      await presignAndUpload(f,key,p=>bar.style.width=Math.round(((i+p)/(files.length+1))*100)+'%');
+      tracks.push({id:uid('track'),title:f.name.replace(/\.[^.]+$/,''),audioKey:key});
     }
-
-    await api('/api/admin/albums', {
-      method: 'POST',
-      body: JSON.stringify({ id: albumId, title, year, coverKey, tracks })
-    });
-
-    bar.style.width = '100%';
-    msg.className = 'msg ok';
-    msg.textContent = ` Álbum "${title}" subido con ${tracks.length} canciones.`;
-    $('#albumTitle').value = ''; $('#albumYear').value = '';
-    $('#coverFile').value  = ''; $('#folderInput').value = '';
+    await api('/api/admin/albums',{method:'POST',body:JSON.stringify({id:albumId,title,year,coverKey,tracks})});
+    bar.style.width='100%'; msg.className='msg ok'; msg.textContent=`✓ "${title}" subido con ${tracks.length} canciones.`;
+    $('#albumTitleInput').value=''; $('#albumYear').value=''; $('#coverFile').value=''; $('#folderInput').value='';
     await load();
-  } catch (e) {
-    msg.className = 'msg err'; msg.textContent = e.message;
-  }
+  } catch(e) { msg.className='msg err'; msg.textContent=e.message; }
 });
 
-/* Render lista admin */
 function renderAdminAlbums() {
-  if (!state.catalog) return;
-  const albums = state.catalog.albums || [];
-  $('#adminAlbums').innerHTML = albums.length
-    ? albums.map(a => `
-        <div class="adminAlbum">
-          <span><b>${esc(a.title)}</b><small>${(a.tracks || []).length} canciones · ${a.year || ''}</small></span>
-          <button class="dangerBtn" data-del="${esc(a.id)}">Borrar del servidor</button>
-        </div>`
-      ).join('')
-    : `<p style="color:var(--muted);font-size:.85rem">No hay álbumes subidos.</p>`;
-
-  document.querySelectorAll('[data-del]').forEach(b =>
-    b.addEventListener('click', async () => {
-      if (!confirm('¿Borrar este álbum del servidor? Esta acción es permanente.')) return;
-      try {
-        await api(`/api/albums/${b.dataset.del}/delete`, { method: 'DELETE' });
-        await load();
-      } catch (e) {
-        alert('Error al borrar: ' + e.message);
-      }
+  if(!state.catalog) return;
+  const albums=state.catalog.albums||[];
+  $('#adminAlbums').innerHTML=albums.length
+    ?albums.map(a=>`<div class="adminAlbum"><span><b>${esc(a.title)}</b><small>${(a.tracks||[]).length} canciones · ${a.year||''}</small></span><button class="dangerBtn" data-del="${esc(a.id)}">Borrar</button></div>`).join('')
+    :`<p style="color:var(--muted);font-size:.84rem">No hay álbumes.</p>`;
+  document.querySelectorAll('[data-del]').forEach(b=>
+    b.addEventListener('click',async()=>{
+      if(!confirm('¿Borrar este álbum? Es permanente.')) return;
+      try { await api(`/api/albums/${b.dataset.del}/delete`,{method:'DELETE'}); await load(); }
+      catch(e) { alert('Error: '+e.message); }
     })
   );
 }
 
-/*  Prevenir descarga por arrastre  */
-document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
+document.addEventListener('dragstart',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
 
-/*  Arranque  */
-load().catch(e => {
-  $('#albums').innerHTML = `<div class="empty">Error al cargar SONARA: ${esc(e.message)}<br><small>Verifica las variables de entorno en Vercel.</small></div>`;
+load().catch(e=>{
+  $('#trackList').innerHTML=`<div class="empty-state">Error al cargar: ${esc(e.message)}</div>`;
 });
 </script>
 </body>
