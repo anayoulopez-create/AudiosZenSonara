@@ -575,7 +575,7 @@
     <!-- Panel autenticado -->
     <div id="adminContent" class="hidden">
   <div style="margin-bottom:12px;text-align:right">
-    <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">üåê Ir a la web</button>
+    <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">🌐 Ir a la web</button>
   </div>
   <div class="panel" style="margin-bottom:16px">
     <h3 style="margin-bottom:8px">Cambiar contraseña admin</h3>
@@ -613,7 +613,7 @@
         </div>
         <div class="field"><label>Carátula del álbum</label><input id="coverFile" type="file" accept="image/*" /></div>
         <div class="drop">
-          <b>üìÅ Carpeta de canciones</b>
+          <b>📁 Carpeta de canciones</b>
           <p>Selecciona la carpeta completa. Todos los MP3 heredan la carátula elegida arriba.</p>
           <input id="folderInput" type="file" webkitdirectory directory multiple accept="audio/*" style="margin-top:10px" />
         </div>
@@ -886,13 +886,13 @@ async function presignAndUpload(file, key, onProgress) {
   }
   const { url } = await presignRes.json();
 
-  // 2. Subir el archivo directo a Backblaze con la URL firmada
+  // 2. Subir el archivo directo a R2 (Cloudflare) con la URL firmada
   await new Promise((resolve, reject) => {
     const x = new XMLHttpRequest();
     x.open('PUT', url);
     x.setRequestHeader('Content-Type', contentType);
     x.upload.onprogress = e => { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
-    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error(`Error al subir a Backblaze (${x.status})`));
+    x.onload = () => x.status >= 200 && x.status < 300 ? resolve() : reject(new Error(`Error al subir a R2 (${x.status})`));
     x.onerror = () => reject(new Error('Error de red al subir. Verifica la configuración CORS.'));
     x.send(file);
   });
