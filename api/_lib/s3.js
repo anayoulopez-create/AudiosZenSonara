@@ -13,13 +13,12 @@ export function bucket() {
 
 export function client() {
   return new S3Client({
-    region: process.env.B2_REGION || 'us-west-000',
+    region: process.env.B2_REGION || 'auto',
     endpoint: required('B2_ENDPOINT'),
     credentials: {
       accessKeyId: required('B2_KEY_ID'),
       secretAccessKey: required('B2_APPLICATION_KEY')
     },
-    forcePathStyle: true
   });
 }
 
