@@ -517,7 +517,6 @@
 <aside class="sidebar">
   <div class="logo">MissAB</div>
   <div class="profile-wrap">
-    <div class="avatar-lg" id="avatar"></div>
     <div class="profile-name" id="alias">MissAB</div>
     <div class="profile-role">Productor Musical IA</div>
     <p class="profile-bio" id="bio"></p>
@@ -604,27 +603,6 @@
     </div>
 
     <div id="adminContent" class="hidden">
-      <div style="margin-bottom:12px;text-align:right">
-        <button class="btn" onclick="window.location.href='https://audios-zen-sonara.vercel.app'">🌐 Ir a la web</button>
-      </div>
-      <div class="grid2">
-        <div class="box">
-          <h3>Perfil — Texto</h3>
-          <div class="field"><label>Nombre</label><input id="editAlias" placeholder="MissAB" /></div>
-          <div class="field"><label>Biografía</label><textarea id="editBio"></textarea></div>
-          <button class="btn" id="saveProfileText" style="margin-top:14px">Guardar</button>
-          <p class="msg" id="profileTextMsg"></p>
-        </div>
-        <div class="box">
-          <h3>Imágenes</h3>
-          <div class="field"><label>Avatar</label><input id="avatarFile" type="file" accept="image/*" /></div>
-          <div class="field"><label>Fondo</label><input id="backgroundFile" type="file" accept="image/*" /></div>
-          <button class="btn" id="saveImages" style="margin-top:14px">Subir imágenes</button>
-          <div class="progress"><i id="imgProgress"></i></div>
-          <p class="msg" id="imgMsg"></p>
-        </div>
-      </div>
-
       <div class="box">
         <h3>Subir álbum</h3>
         <div class="grid2">
@@ -640,11 +618,6 @@
         <button class="btn" id="uploadAlbum" style="margin-top:14px">Subir álbum completo</button>
         <div class="progress"><i id="uploadProgress"></i></div>
         <p class="msg" id="uploadMsg"></p>
-      </div>
-
-      <div class="box">
-        <h3>Álbumes en servidor</h3>
-        <div id="adminAlbums"><p style="color:var(--muted);font-size:.84rem">Cargando...</p></div>
       </div>
     </div>
   </div>
@@ -960,7 +933,7 @@ function renderAdminAlbums() {
   if(!state.catalog) return;
   const albums=state.catalog.albums||[];
   $('#adminAlbums').innerHTML=albums.length
-    ?albums.map(a=>`<div class="adminAlbum"><span><b>${esc(a.title)}</b><small>${(a.tracks||[]).length} canciones · ${a.year||''}</small></span><button class="dangerBtn" data-del="${esc(a.id)}">Borrar</button></div>`).join('')
+    ?albums.map(a=>`<div class="adminAlbum"><span><b>${esc(a.title)}</b><small>${(a.tracks||[]).length} canciones · ${a.year||''}</small></span></div>`).join('')
     :`<p style="color:var(--muted);font-size:.84rem">No hay álbumes.</p>`;
   document.querySelectorAll('[data-del]').forEach(b=>
     b.addEventListener('click',async()=>{
